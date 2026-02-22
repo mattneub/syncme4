@@ -1,0 +1,6 @@
+framework module MacOSGlues {
+  umbrella header "MacOSGlues.h"
+  export *
+
+  module * { export * }
+}

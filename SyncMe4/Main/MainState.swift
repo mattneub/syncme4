@@ -1,0 +1,1 @@
+struct MainState: Equatable {}

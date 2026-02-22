@@ -1,41 +1,48 @@
-//
-//  AppDelegate.swift
-//  SyncMe4
-//
-//  Created by Matt Neuburg on 2/21/26.
-//
-
 import Cocoa
-import SwiftAutomation
-import MacOSGlues
+//import SwiftAutomation
+//import MacOSGlues
 
-
-
-@main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow!
 
+    var rootCoordinator: any RootCoordinatorType = RootCoordinator()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        do {
-            try TextEdit().activate()
-            print("ok")
-            let result = try TextEdit().name.get()
-            print("ok", result)
-        } catch {
-            print("error", error)
+        unlessTesting {
+            bootstrap()
         }
     }
 
+    func bootstrap() {
+        // The Empty.xib file prevents automatic finding of the MainMenu.xib file,
+        // so we can now load it ourselves as part of the bootstrap
+        // but I don't want to do that even when testing this method, because of the massive console dump it causes
+        unlessTesting {
+            Bundle.main.loadNibNamed("MainMenu", owner: NSApplication.shared, topLevelObjects: nil)
+        }
+        // create the window _after_ loading the menu, so that it gets registered into the window menu
+        window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 660, height: 432),
+            styleMask: [.miniaturizable, .closable, .titled, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        rootCoordinator.createMainModule(window: window)
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.title = "SyncMe4"
+        window.minSize = CGSize(width: 660, height: 432)
+        window.makeKeyAndOrderFront(nil)
+        // window.setFrameAutosaveName("SyncMe4_Main_Window")
+        // hook Option menu to our "manual binding" system
+        // NSApplication.shared.mainMenu?.item(withTitle: "Option")?.submenu?.delegate = self
+    }
+
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
     }
 
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return true
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        unlessTesting(true)
     }
-
-
 }
-

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F556A5A2F4BA763004B0285 /* WaitWhile in Frameworks */ = {isa = PBXBuildFile; productRef = 3F556A592F4BA763004B0285 /* WaitWhile */; };
 		3FFFB96D2F4A1F0C004ECD71 /* MacOSGlues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; };
 		3FFFB96E2F4A1F0C004ECD71 /* SwiftAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; };
 		3FFFB96F2F4A1F0C004ECD71 /* AppleEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */; };
@@ -14,6 +15,16 @@
 		3FFFB9712F4A1F1A004ECD71 /* MacOSGlues.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3FFFB9722F4A1F1A004ECD71 /* SwiftAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3F5568F32F4BA582004B0285 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFB9462F4A132A004ECD71 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3FFFB94D2F4A132A004ECD71;
+			remoteInfo = SyncMe4;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		3FFFB9692F4A17A4004ECD71 /* Embed Frameworks */ = {
@@ -32,6 +43,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F5568EF2F4BA582004B0285 /* SyncMe4Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncMe4Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = SyncMe4.xctestplan; sourceTree = "<group>"; };
 		3FFFB94E2F4A132A004ECD71 /* SyncMe4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncMe4.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppleEvents.framework; sourceTree = "<group>"; };
 		3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MacOSGlues.framework; sourceTree = "<group>"; };
@@ -39,6 +52,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3F5568F02F4BA582004B0285 /* SyncMe4Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SyncMe4Tests;
+			sourceTree = "<group>";
+		};
 		3FFFB9502F4A132A004ECD71 /* SyncMe4 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SyncMe4;
@@ -47,6 +65,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3F5568EC2F4BA582004B0285 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F556A5A2F4BA763004B0285 /* WaitWhile in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FFFB94B2F4A132A004ECD71 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -63,10 +89,12 @@
 		3FFFB9452F4A132A004ECD71 = {
 			isa = PBXGroup;
 			children = (
+				3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */,
 				3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */,
 				3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */,
 				3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */,
 				3FFFB9502F4A132A004ECD71 /* SyncMe4 */,
+				3F5568F02F4BA582004B0285 /* SyncMe4Tests */,
 				3FFFB95D2F4A1393004ECD71 /* Frameworks */,
 				3FFFB94F2F4A132A004ECD71 /* Products */,
 			);
@@ -76,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				3FFFB94E2F4A132A004ECD71 /* SyncMe4.app */,
+				3F5568EF2F4BA582004B0285 /* SyncMe4Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,6 +119,30 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3F5568EE2F4BA582004B0285 /* SyncMe4Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F5568F72F4BA582004B0285 /* Build configuration list for PBXNativeTarget "SyncMe4Tests" */;
+			buildPhases = (
+				3F5568EB2F4BA582004B0285 /* Sources */,
+				3F5568EC2F4BA582004B0285 /* Frameworks */,
+				3F5568ED2F4BA582004B0285 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F5568F42F4BA582004B0285 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3F5568F02F4BA582004B0285 /* SyncMe4Tests */,
+			);
+			name = SyncMe4Tests;
+			packageProductDependencies = (
+				3F556A592F4BA763004B0285 /* WaitWhile */,
+			);
+			productName = SyncMe4Tests;
+			productReference = 3F5568EF2F4BA582004B0285 /* SyncMe4Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3FFFB94D2F4A132A004ECD71 /* SyncMe4 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3FFFB95A2F4A132B004ECD71 /* Build configuration list for PBXNativeTarget "SyncMe4" */;
@@ -123,6 +176,10 @@
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
+					3F5568EE2F4BA582004B0285 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 3FFFB94D2F4A132A004ECD71;
+					};
 					3FFFB94D2F4A132A004ECD71 = {
 						CreatedOnToolsVersion = 26.2;
 					};
@@ -137,17 +194,28 @@
 			);
 			mainGroup = 3FFFB9452F4A132A004ECD71;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3F556A582F4BA763004B0285 /* XCRemoteSwiftPackageReference "WaitWhile" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3FFFB94F2F4A132A004ECD71 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				3FFFB94D2F4A132A004ECD71 /* SyncMe4 */,
+				3F5568EE2F4BA582004B0285 /* SyncMe4Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3F5568ED2F4BA582004B0285 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FFFB94C2F4A132A004ECD71 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -158,6 +226,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3F5568EB2F4BA582004B0285 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FFFB94A2F4A132A004ECD71 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,7 +242,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3F5568F42F4BA582004B0285 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3FFFB94D2F4A132A004ECD71 /* SyncMe4 */;
+			targetProxy = 3F5568F32F4BA582004B0285 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3F5568F52F4BA582004B0285 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3LHX5RGV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.neuburg.matt.SyncMe4Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SyncMe4.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SyncMe4";
+			};
+			name = Debug;
+		};
+		3F5568F62F4BA582004B0285 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3LHX5RGV2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.neuburg.matt.SyncMe4Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SyncMe4.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SyncMe4";
+			};
+			name = Release;
+		};
 		3FFFB9582F4A132B004ECD71 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -294,11 +421,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = SyncMe4/SyncMe4.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3LHX5RGV2;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
@@ -315,7 +443,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "The app would like to send Apple Events to the Finder.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainNibFile = MainMenu;
+				INFOPLIST_KEY_NSMainNibFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -336,6 +464,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_ENABLE_EXPLICIT_MODULES = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 			};
@@ -347,11 +476,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = SyncMe4/SyncMe4.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3LHX5RGV2;
-				ENABLE_APP_SANDBOX = NO;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
@@ -368,7 +498,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "The app would like to send Apple Events to the Finder.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainNibFile = MainMenu;
+				INFOPLIST_KEY_NSMainNibFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -389,6 +519,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_ENABLE_EXPLICIT_MODULES = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 			};
@@ -397,6 +528,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3F5568F72F4BA582004B0285 /* Build configuration list for PBXNativeTarget "SyncMe4Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F5568F52F4BA582004B0285 /* Debug */,
+				3F5568F62F4BA582004B0285 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3FFFB9492F4A132A004ECD71 /* Build configuration list for PBXProject "SyncMe4" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -416,6 +556,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3F556A582F4BA763004B0285 /* XCRemoteSwiftPackageReference "WaitWhile" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattneub/WaitWhile";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3F556A592F4BA763004B0285 /* WaitWhile */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F556A582F4BA763004B0285 /* XCRemoteSwiftPackageReference "WaitWhile" */;
+			productName = WaitWhile;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3FFFB9462F4A132A004ECD71 /* Project object */;
 }

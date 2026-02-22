@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "5E5C3AE4-B086-4E53-9909-5C2B2DA335F8",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SyncMe4.xcodeproj",
+      "identifier" : "3FFFB94D2F4A132A004ECD71",
+      "name" : "SyncMe4"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:SyncMe4.xcodeproj",
+        "identifier" : "3F5568EE2F4BA582004B0285",
+        "name" : "SyncMe4Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

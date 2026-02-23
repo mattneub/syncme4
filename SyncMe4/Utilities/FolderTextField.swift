@@ -68,4 +68,24 @@ class FolderTextField: NSTextField {
             backgroundColor = NSColor.white
         }
     }
+
+    override func draw(_ rect: NSRect) {
+        let context = NSGraphicsContext.current
+        context?.saveGraphicsState()
+        do {
+            context?.shouldAntialias = true
+
+            let bounds = self.bounds.insetBy(dx: 1, dy: 1)
+            let path = NSBezierPath(roundedRect: bounds, xRadius: 5, yRadius: 5)
+            path.setClip()
+
+            if let bg = self.backgroundColor {
+                bg.setFill()
+                path.fill()
+            }
+        }
+        context?.restoreGraphicsState()
+        super.draw(rect)
+
+    }
 }

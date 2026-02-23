@@ -44,7 +44,7 @@
 
 /* Begin PBXFileReference section */
 		3F5568EF2F4BA582004B0285 /* SyncMe4Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncMe4Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = SyncMe4.xctestplan; sourceTree = "<group>"; };
+		3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncMe4.xctestplan; sourceTree = "<group>"; };
 		3FFFB94E2F4A132A004ECD71 /* SyncMe4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncMe4.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppleEvents.framework; sourceTree = "<group>"; };
 		3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MacOSGlues.framework; sourceTree = "<group>"; };

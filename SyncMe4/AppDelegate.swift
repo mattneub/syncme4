@@ -2,6 +2,9 @@ import Cocoa
 //import SwiftAutomation
 //import MacOSGlues
 
+@MainActor
+var services = Services()
+
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet var window: NSWindow!

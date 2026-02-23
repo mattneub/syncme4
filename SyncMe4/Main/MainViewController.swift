@@ -1,4 +1,6 @@
 import AppKit
+import SwiftAutomation
+import MacOSGlues
 
 final class MainViewController: NSViewController, ReceiverPresenter {
     weak var processor: (any Receiver<MainAction>)?
@@ -8,6 +10,17 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     @IBOutlet var rightField: NSTextField!
 
     override var nibName: NSNib.Name? { "Main" }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // just enough to trigger the system dialog, if needed, on launch
+        let finder = Finder()
+        if let name = try? finder.name.get() {
+            print(name)
+        } else {
+            // could terminate at this point, as we have no purpose without this
+        }
+    }
 
     func present(_ state: MainState) async {
         if state.leftFolder != leftField.objectValue as? URL {

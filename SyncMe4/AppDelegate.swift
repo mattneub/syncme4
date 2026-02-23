@@ -1,6 +1,4 @@
 import Cocoa
-//import SwiftAutomation
-//import MacOSGlues
 
 @MainActor
 var services = Services()

@@ -102,11 +102,28 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for identical both sides where one is folder and one is not")
     func identicalButFolderVsFile() async {
-        // this is a crucial edge case
-        let copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
+        var copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
         let copyTo = url2.appending(component: "test", directoryHint: .notDirectory)
         try! FileManager.default.createDirectory(at: copyFrom, withIntermediateDirectories: true)
         try! "howdy".write(to: copyTo, atomically: true, encoding: .utf8)
+        let date = Date().addingTimeInterval(-100)
+        var values: URLResourceValues = .init()
+        values.contentModificationDate = date
+        try! copyFrom.setResourceValues(values)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        #expect(result.count == 0)
+    }
+
+    @Test("compareFolders: correct for identical both sides where one is folder and one is not, other way round")
+    func identicalButFolderVsFileOtherWayRound() async {
+        var copyFrom = url1.appending(component: "test", directoryHint: .notDirectory)
+        let copyTo = url2.appending(component: "test", directoryHint: .isDirectory)
+        try! FileManager.default.createDirectory(at: copyTo, withIntermediateDirectories: true)
+        try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
+        let date = Date().addingTimeInterval(-100)
+        var values: URLResourceValues = .init()
+        values.contentModificationDate = date
+        try! copyFrom.setResourceValues(values)
         let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
         #expect(result.count == 0)
     }

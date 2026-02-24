@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		3F556A5A2F4BA763004B0285 /* WaitWhile in Frameworks */ = {isa = PBXBuildFile; productRef = 3F556A592F4BA763004B0285 /* WaitWhile */; };
-		3FFFB96D2F4A1F0C004ECD71 /* MacOSGlues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		3FFFB96E2F4A1F0C004ECD71 /* SwiftAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		3FFFB96F2F4A1F0C004ECD71 /* AppleEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		3FFFB96D2F4A1F0C004ECD71 /* MacOSGlues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		3FFFB96E2F4A1F0C004ECD71 /* SwiftAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		3FFFB96F2F4A1F0C004ECD71 /* AppleEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		3FFFB9702F4A1F1A004ECD71 /* AppleEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3FFFB9712F4A1F1A004ECD71 /* MacOSGlues.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3FFFB9722F4A1F1A004ECD71 /* SwiftAutomation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -258,7 +258,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3LHX5RGV2;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neuburg.matt.SyncMe4Tests;
@@ -284,7 +288,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3LHX5RGV2;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neuburg.matt.SyncMe4Tests;
@@ -442,7 +450,7 @@
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -497,7 +505,7 @@
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

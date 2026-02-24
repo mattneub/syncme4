@@ -9,6 +9,13 @@ final class MainViewController: NSViewController, ReceiverPresenter {
 
     @IBOutlet var rightField: NSTextField!
 
+    @IBOutlet weak var tableView: NSTableView!
+
+    lazy var datasource: (any TableViewDatasourceType<Void, MainState>) = MainDatasource(
+        tableView: tableView,
+        processor: processor
+    )
+
     override var nibName: NSNib.Name? { "Main" }
 
     override func viewDidLoad() {
@@ -29,6 +36,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
         if state.rightFolder != rightField.objectValue as? URL {
             rightField.objectValue = state.rightFolder
         }
+        await datasource.present(state)
     }
 
     @IBAction func textFieldChanged(_ sender: Any) {

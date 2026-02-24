@@ -20,7 +20,9 @@ final class MainProcessor: Processor {
                 return
             }
             do {
-                let result = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+                let results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+                state.results = results
+                await presenter?.present(state)
             } catch {
                 print(error) // TODO: do something useful with error
             }

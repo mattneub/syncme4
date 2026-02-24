@@ -6,14 +6,24 @@ import WaitWhile
 struct MainViewControllerTests {
     let subject = MainViewController()
     let processor = MockProcessor<MainAction, MainState, Void>()
+    let datasource = MockMainDatasource()
 
     init() {
         subject.processor = processor
+        subject.datasource = datasource
     }
 
     @Test("nibName: is correct")
     func nibName() {
         #expect(subject.nibName == "Main")
+    }
+
+    @Test("datasource is MainDatasource")
+    func datasourceInitializer() {
+        let subject = MainViewController()
+        subject.loadViewIfNeeded()
+        _ = subject.datasource
+        #expect(subject.datasource is MainDatasource)
     }
 
     @Test("present: sets leftField and rightField object value")
@@ -27,6 +37,19 @@ struct MainViewControllerTests {
         await subject.present(state)
         #expect(subject.leftField.objectValue as? URL == url1)
         #expect(subject.rightField.objectValue as? URL == url2)
+    }
+
+    @Test("present: presents to datasource")
+    func presentDatasource() async {
+        subject.loadViewIfNeeded()
+        let url1 = URL(string: "http://www.example1.com")!
+        let url2 = URL(string: "http://www.example2.com")!
+        var state = MainState()
+        state.leftFolder = url1
+        state.rightFolder = url2
+        await subject.present(state)
+        #expect(datasource.methodsCalled == ["present(_:)"])
+        #expect(datasource.statePresented == state)
     }
 
     @Test("textFieldChanged: sends left/right field changed depending on sender")

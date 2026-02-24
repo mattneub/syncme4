@@ -64,4 +64,11 @@ struct MainViewControllerTests {
         #expect(processor.thingsReceived == [.rightFieldChoose(window)])
         closeWindows()
     }
+
+    @Test("preflight: sends preflight")
+    func preflight() async {
+        subject.preflight(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.preflight])
+    }
 }

@@ -14,6 +14,16 @@ final class MainProcessor: Processor {
                 state.leftFolder = url
                 await presenter?.present(state)
             }
+        case .preflight:
+            guard let url1 = state.leftFolder, let url2 = state.rightFolder else {
+                services.beeper.beep()
+                return
+            }
+            do {
+                let result = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+            } catch {
+                print(error) // TODO: do something useful with error
+            }
         case .rightFieldChanged(let url):
             state.rightFolder = url
         case .rightFieldChoose(let window):

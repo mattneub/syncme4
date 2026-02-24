@@ -2,7 +2,7 @@
 /// reconciled. It has an Int raw value because case order is sort order, and so
 /// we can map to raw value and sort on that. It also provides a mapping from a
 /// reason to the image representing it, via its string name.
-enum Reason: Int {
+nonisolated enum Reason: Int {
     case absentRight
     case olderRight
     case absentLeft

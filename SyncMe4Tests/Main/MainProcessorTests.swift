@@ -6,10 +6,14 @@ struct MainProcessorTests {
     let subject = MainProcessor()
     let presenter = MockReceiverPresenter<Void, MainState>()
     let openPanelOpener = MockOpenPanelOpener()
+    let beeper = MockBeeper()
+    let preflighter = MockPreflighter()
 
     init() {
         subject.presenter = presenter
         services.openPanelOpener = openPanelOpener
+        services.beeper = beeper
+        services.preflighter = preflighter
     }
 
     @Test("receive leftFieldChanged: sets state leftFolder")
@@ -42,6 +46,40 @@ struct MainProcessorTests {
         #expect(openPanelOpener.window === window)
         #expect(subject.state.leftFolder == url)
         #expect(presenter.statesPresented.isEmpty)
+    }
+
+    @Test("receive preflight: calls preflighter compareFolders")
+    func preflight() async {
+        subject.state.leftFolder = URL(string: "http://www.example.com")!
+        subject.state.rightFolder = URL(string: "http://www.example2.com")!
+        await subject.receive(.preflight)
+        #expect(preflighter.methodsCalled == ["compareFolders(folder1:folder2:)"])
+        #expect(preflighter.folder1 == subject.state.leftFolder)
+        #expect(preflighter.folder2 == subject.state.rightFolder)
+    }
+
+    @Test("receive preflight: if not both folders in state, beeps, does not preflight")
+    func preflightNotTwoFolders() async {
+        do {
+            await subject.receive(.preflight)
+            #expect(beeper.methodsCalled == ["beep()"])
+            #expect(preflighter.methodsCalled.isEmpty)
+        }
+        beeper.methodsCalled = []
+        subject.state.leftFolder = URL(string: "http://www.example.com")!
+        do {
+            await subject.receive(.preflight)
+            #expect(beeper.methodsCalled == ["beep()"])
+            #expect(preflighter.methodsCalled.isEmpty)
+        }
+        beeper.methodsCalled = []
+        subject.state.rightFolder = URL(string: "http://www.example.com")!
+        subject.state.leftFolder = nil
+        do {
+            await subject.receive(.preflight)
+            #expect(beeper.methodsCalled == ["beep()"])
+            #expect(preflighter.methodsCalled.isEmpty)
+        }
     }
 
     @Test("receive rightFieldChanged: sets state rightFolder")

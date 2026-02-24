@@ -1,6 +1,6 @@
 import AppKit
-import SwiftAutomation
-import MacOSGlues
+//import SwiftAutomation
+//import MacOSGlues
 
 final class MainViewController: NSViewController, ReceiverPresenter {
     weak var processor: (any Receiver<MainAction>)?
@@ -14,12 +14,12 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     override func viewDidLoad() {
         super.viewDidLoad()
         // just enough to trigger the system dialog, if needed, on launch
-        let finder = Finder()
-        if let name = try? finder.name.get() {
-            print(name)
-        } else {
-            // could terminate at this point, as we have no purpose without this
-        }
+//        let finder = Finder()
+//        if let name = try? finder.name.get() {
+//            print(name)
+//        } else {
+//            // could terminate at this point, as we have no purpose without this
+//        }
     }
 
     func present(_ state: MainState) async {
@@ -58,6 +58,12 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             if let window = (sender as? NSView)?.window {
                 await processor?.receive(.rightFieldChoose(window))
             }
+        }
+    }
+
+    @IBAction func preflight(_ sender: Any) {
+        Task {
+            await processor?.receive(.preflight)
         }
     }
 }

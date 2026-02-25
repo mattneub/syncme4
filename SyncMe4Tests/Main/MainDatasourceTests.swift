@@ -48,14 +48,14 @@ private struct MainDatasourceTests {
         }
     }
 
-    @Test("selectionChanged: sends selectedRow to processor")
+    @Test("selectionChanged: sends selectedRows to processor")
     func selectionChanged() async {
-//        let tableView = MockTableView()
-//        tableView._selectedRow = 3
-//        subject.tableView = tableView
-//        subject.tableViewSelectionDidChange(Notification(name: .init("dummy")))
-//        await #while(processor.thingsReceived.isEmpty)
-//        #expect(processor.thingsReceived == [.selectedRow(3)])
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = [3]
+        subject.tableView = tableView
+        subject.tableViewSelectionDidChange(Notification(name: .init("dummy")))
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.selectedRows([3])])
     }
 
     @Test("datasource sortDescriptorsDidChange: sends updateResults to processor")
@@ -78,6 +78,9 @@ private final class MyViewController: NSViewController {
     @IBOutlet var tableView: NSTableView!
     @IBOutlet var leftField: NSTextField!
     @IBOutlet var rightField: NSTextField!
+    @IBOutlet var leftSelected: NSTextField!
+    @IBOutlet var rightSelected: NSTextField!
+    @IBOutlet var arrow: NSImageView!
     @IBAction func textFieldChanged(_ sender: Any) {}
     @IBAction func leftFieldChoose(_ sender: Any) {}
     @IBAction func rightFieldChoose(_ sender: Any) {}
@@ -86,8 +89,10 @@ private final class MyViewController: NSViewController {
 
 private final class MockTableView: NSTableView {
     var _selectedRow: Int = 0
+    var _selectedRowIndexes = IndexSet([1, 2])
     var _sortDescriptors: [NSSortDescriptor] = []
     override var selectedRow: Int { _selectedRow }
+    override var selectedRowIndexes: IndexSet { _selectedRowIndexes }
     override var sortDescriptors: [NSSortDescriptor] {
         get { _sortDescriptors }
         set {}

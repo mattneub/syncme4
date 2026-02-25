@@ -118,5 +118,11 @@ struct MainProcessorTests {
         #expect(presenter.statesPresented.isEmpty)
     }
 
+    @Test("receive selectedRows: sets state selectedResults, presents")
+    func selectedRows() async {
+        await subject.receive(.selectedRows([1, 3, 5]))
+        #expect(subject.state.selectedResults == [1, 3, 5])
+        #expect(presenter.statesPresented == [subject.state])
+    }
 
 }

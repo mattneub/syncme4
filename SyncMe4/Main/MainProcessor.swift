@@ -33,6 +33,9 @@ final class MainProcessor: Processor {
                 state.rightFolder = url
                 await presenter?.present(state)
             }
+        case .selectedRows(let indexSet):
+            state.selectedResults = indexSet
+            await presenter?.present(state)
         }
     }
 }

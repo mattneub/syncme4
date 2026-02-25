@@ -11,6 +11,13 @@ final class MainViewController: NSViewController, ReceiverPresenter {
 
     @IBOutlet weak var tableView: NSTableView!
 
+    @IBOutlet var leftSelected: NSTextField!
+
+    @IBOutlet var rightSelected: NSTextField!
+
+    @IBOutlet var arrow: NSImageView!
+
+
     lazy var datasource: (any TableViewDatasourceType<Void, MainState>) = MainDatasource(
         tableView: tableView,
         processor: processor
@@ -20,6 +27,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.allowsMultipleSelection = true
         // just enough to trigger the system dialog, if needed, on launch
         let finder = Finder()
         if let name = try? finder.name.get() {
@@ -36,6 +44,9 @@ final class MainViewController: NSViewController, ReceiverPresenter {
         if state.rightFolder != rightField.objectValue as? URL {
             rightField.objectValue = state.rightFolder
         }
+        leftSelected.stringValue = state.leftPath ?? ""
+        rightSelected.stringValue = state.rightPath ?? ""
+        arrow.image = if let arrow = state.arrow { NSImage(named: arrow) } else { nil }
         await datasource.present(state)
     }
 

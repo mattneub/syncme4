@@ -6,4 +6,5 @@ enum MainAction: Equatable {
     case preflight
     case rightFieldChanged(URL?)
     case rightFieldChoose(NSWindow)
+    case selectedRows(IndexSet)
 }

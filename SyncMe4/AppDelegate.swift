@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         // create the window _after_ loading the menu, so that it gets registered into the window menu
         window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 660, height: 432),
+            contentRect: NSRect(x: 0, y: 0, width: 682, height: 450),
             styleMask: [.miniaturizable, .closable, .titled, .resizable],
             backing: .buffered,
             defer: false
@@ -33,7 +33,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.isReleasedWhenClosed = false
         window.title = "SyncMe4"
-        window.minSize = CGSize(width: 660, height: 432)
+        window.minSize = CGSize(width: 682, height: 450 + 32)
+        window.maxSize = CGSize(width: 10000, height: 10000)
         window.makeKeyAndOrderFront(nil)
         // window.setFrameAutosaveName("SyncMe4_Main_Window")
         // hook Option menu to our "manual binding" system

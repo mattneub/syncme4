@@ -26,6 +26,12 @@ struct MainViewControllerTests {
         #expect(subject.datasource is MainDatasource)
     }
 
+    @Test("viewDidLoad: configures table view")
+    func viewDidLoad() {
+        subject.loadViewIfNeeded()
+        #expect(subject.tableView.allowsMultipleSelection == true)
+    }
+
     @Test("present: sets leftField and rightField object value")
     func present() async {
         subject.loadViewIfNeeded()
@@ -37,6 +43,30 @@ struct MainViewControllerTests {
         await subject.present(state)
         #expect(subject.leftField.objectValue as? URL == url1)
         #expect(subject.rightField.objectValue as? URL == url2)
+    }
+
+    @Test("present: sets leftSelected, rightSelected, arrow image")
+    func presentLeftRightArrow() async {
+        subject.loadViewIfNeeded()
+        subject.leftSelected.stringValue = "left"
+        subject.rightSelected.stringValue = "right"
+        subject.arrow.image = NSImage(named: NSImage.computerName)!
+        var state = MainState()
+        await subject.present(state)
+        #expect(subject.leftSelected.stringValue == "")
+        #expect(subject.rightSelected.stringValue == "")
+        #expect(subject.arrow.image == nil)
+        state.selectedResults = [1, 2, 3]
+        await subject.present(state)
+        #expect(subject.leftSelected.stringValue == "")
+        #expect(subject.rightSelected.stringValue == "")
+        #expect(subject.arrow.image == nil)
+        state.selectedResults = [0]
+        state.results = [Entry(copyFrom: URL(string: "file:///a/b")!, copyTo: URL(string: "file:///c/d")!, why: .absentRight)]
+        await subject.present(state)
+        #expect(subject.leftSelected.stringValue == "/\u{200B}a/\u{200B}b")
+        #expect(subject.rightSelected.stringValue == "/\u{200B}c/\u{200B}d")
+        #expect(subject.arrow.image == NSImage(named: "rightarrowgreen"))
     }
 
     @Test("present: presents to datasource")

@@ -71,9 +71,9 @@ final class MainDatasource: NSObject, @MainActor TableViewDatasourceType {
 
 extension MainDatasource { // table view delegate methods
     func tableViewSelectionDidChange(_ notification: Notification) {
-//        Task {
-//            await processor?.receive(.selectedRow(tableView?.selectedRow ?? -1))
-//        }
+        Task {
+            await processor?.receive(.selectedRows(tableView?.selectedRowIndexes ?? []))
+        }
     }
 }
 

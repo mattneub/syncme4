@@ -10,7 +10,7 @@ final class RootCoordinator: RootCoordinatorType {
     /// In case we need to know where the main window is, or bring it to the front.
     weak var mainWindow: NSWindow?
 
-    var mainProcessor: (any Processor<MainAction, MainState, Void>)?
+    var mainProcessor: (any Processor<MainAction, MainState, MainEffect>)?
 
     func createMainModule(window: NSWindow) {
         let processor = MainProcessor()

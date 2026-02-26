@@ -1,10 +1,23 @@
 import AppKit
 
 protocol PreflighterType {
+    var currentFolder: String? { get }
+    func prepare()
     func compareFolders(folder1: URL, folder2: URL) async throws -> [Entry]
 }
 
+@Observable
+nonisolated
 final class Preflighter: PreflighterType {
+    /// Observable value of the folder we are currently considering.
+    nonisolated var currentFolder: String?
+
+    /// Public method. An observer must call this before starting to observe, so that it does
+    /// not immediately see `nil` as the current folder, because `nil` is the signal we've finished.
+    func prepare() {
+        currentFolder = ""
+    }
+
     /// Public method. The strategy is to make the comparison in two passes: in the first pass,
     /// we discover items that exist in folder1 that do not exist in folder2, and in the second,
     /// we discover items that exist in folder2 that do not exist in folder1. In the first pass,
@@ -23,6 +36,7 @@ final class Preflighter: PreflighterType {
         let stopList = [String]() // TODO: fetch stop list from user defaults
         try listInto(&list, withFolder: folder1, withFolder: folder2, firstPass: true, stopList: stopList)
         try listInto(&list, withFolder: folder2, withFolder: folder1, firstPass: false, stopList: stopList)
+        currentFolder = nil // signal finished
         return list
     }
 
@@ -43,6 +57,7 @@ final class Preflighter: PreflighterType {
         firstPass: Bool,
         stopList: [String]
     ) throws {
+        currentFolder = folder1.path(percentEncoded: false)
         var keys: Set<URLResourceKey> = [
             .isDirectoryKey, .isPackageKey, .isAliasFileKey, .isSymbolicLinkKey
         ]

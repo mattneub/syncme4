@@ -80,6 +80,9 @@ private final class MyViewController: NSViewController {
     @IBOutlet var rightField: NSTextField!
     @IBOutlet var leftSelected: NSTextField!
     @IBOutlet var rightSelected: NSTextField!
+    @IBOutlet var cancelButton: NSButton!
+    @IBOutlet var currentFolder: NSTextField!
+    @IBOutlet var nowProcessing: NSTextField!
     @IBOutlet var arrow: NSImageView!
     @IBAction func textFieldChanged(_ sender: Any) {}
     @IBAction func leftFieldChoose(_ sender: Any) {}

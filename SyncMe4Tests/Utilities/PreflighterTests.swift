@@ -1,9 +1,9 @@
 @testable import SyncMe4
 import Testing
 import AppKit
+import WaitWhile
 
 struct PreflighterTests: ~Copyable {
-    let subject = Preflighter()
     let url1 = URL.temporaryDirectory.appendingPathComponent("left/")
     let url2 = URL.temporaryDirectory.appendingPathComponent("right/")
 
@@ -17,8 +17,17 @@ struct PreflighterTests: ~Copyable {
         try! FileManager.default.removeItem(at: url2)
     }
 
+    @Test("prepare: sets currentFolder to empty string")
+    func prepare() {
+        let subject = Preflighter()
+        #expect(subject.currentFolder == nil)
+        subject.prepare()
+        #expect(subject.currentFolder == "")
+    }
+
     @Test("compareFolders: correct for absent right")
     func absentRight() async {
+        let subject = Preflighter()
         let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         let copyTo = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
@@ -31,6 +40,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for absent right when item is a folder")
     func absentRightFolder() async {
+        let subject = Preflighter()
         let copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
         let copyTo = url2.appending(component: "test", directoryHint: .isDirectory)
         try! FileManager.default.createDirectory(at: copyFrom, withIntermediateDirectories: true)
@@ -43,6 +53,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for absent left")
     func absentLeft() async {
+        let subject = Preflighter()
         let copyFrom = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         let copyTo = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
@@ -55,6 +66,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for older right")
     func olderRight() async {
+        let subject = Preflighter()
         let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         var copyTo = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
@@ -71,6 +83,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for older left")
     func olderLeft() async {
+        let subject = Preflighter()
         let copyFrom = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         var copyTo = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
@@ -87,6 +100,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for identical both sides")
     func identical() async {
+        let subject = Preflighter()
         var copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         var copyTo = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
@@ -102,6 +116,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for identical both sides where one is folder and one is not")
     func identicalButFolderVsFile() async {
+        let subject = Preflighter()
         var copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
         let copyTo = url2.appending(component: "test", directoryHint: .notDirectory)
         try! FileManager.default.createDirectory(at: copyFrom, withIntermediateDirectories: true)
@@ -116,6 +131,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: correct for identical both sides where one is folder and one is not, other way round")
     func identicalButFolderVsFileOtherWayRound() async {
+        let subject = Preflighter()
         var copyFrom = url1.appending(component: "test", directoryHint: .notDirectory)
         let copyTo = url2.appending(component: "test", directoryHint: .isDirectory)
         try! FileManager.default.createDirectory(at: copyTo, withIntermediateDirectories: true)
@@ -128,8 +144,17 @@ struct PreflighterTests: ~Copyable {
         #expect(result.count == 0)
     }
 
-    @Test("compareFolders: dives into same-named folders")
+    @Test("compareFolders: dives into same-named folders, sets currentFolder as it goes")
     func dive() async {
+        let subject = Preflighter()
+        subject.currentFolder = ""
+        var currentFolders = [String?]()
+        let task = Task {
+            let observations = Observations { subject.currentFolder }
+            for await currentFolder in observations {
+                currentFolders.append(currentFolder)
+            }
+        }
         let url1 = url1.appending(component: "same", directoryHint: .isDirectory)
         let url2 = url2.appending(component: "same", directoryHint: .isDirectory)
         try! FileManager.default.createDirectory(at: url1, withIntermediateDirectories: true)
@@ -142,5 +167,15 @@ struct PreflighterTests: ~Copyable {
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
         #expect(result[0].why == .absentRight)
+        await #while(currentFolders.count < 5)
+        let expectedFolders = [
+            self.url1,
+            url1,
+            self.url2,
+            url2
+        ].map { $0.path(percentEncoded: false) }
+        let expected: [String?] = expectedFolders + [nil]
+        #expect(currentFolders == expected)
+        task.cancel()
     }
 }

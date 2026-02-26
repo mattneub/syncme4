@@ -9,11 +9,37 @@ final class MainViewController: NSViewController, ReceiverPresenter {
 
     @IBOutlet var rightField: NSTextField!
 
+    @IBOutlet var nowProcessing: NSTextField! {
+        didSet {
+            nowProcessing?.isHidden = true
+        }
+    }
+
+    @IBOutlet var currentFolder: NSTextField! {
+        didSet {
+            currentFolder?.isHidden = true
+        }
+    }
+
+    @IBOutlet var cancelButton: NSButton! {
+        didSet {
+            cancelButton?.isHidden = true
+        }
+    }
+
     @IBOutlet weak var tableView: NSTableView!
 
-    @IBOutlet var leftSelected: NSTextField!
+    @IBOutlet var leftSelected: NSTextField! {
+        didSet {
+            leftSelected?.stringValue = ""
+        }
+    }
 
-    @IBOutlet var rightSelected: NSTextField!
+    @IBOutlet var rightSelected: NSTextField! {
+        didSet {
+            rightSelected?.stringValue = ""
+        }
+    }
 
     @IBOutlet var arrow: NSImageView!
 
@@ -48,6 +74,22 @@ final class MainViewController: NSViewController, ReceiverPresenter {
         rightSelected.stringValue = state.rightPath ?? ""
         arrow.image = if let arrow = state.arrow { NSImage(named: arrow) } else { nil }
         await datasource.present(state)
+    }
+
+    func receive(_ effect: MainEffect) async {
+        switch effect {
+        case .currentFolder(let folder):
+            if let folder {
+                currentFolder.stringValue = folder
+                currentFolder.isHidden = false
+                nowProcessing.isHidden = false
+                cancelButton.isHidden = false
+            } else {
+                currentFolder.isHidden = true
+                nowProcessing.isHidden = true
+                cancelButton.isHidden = true
+            }
+        }
     }
 
     @IBAction func textFieldChanged(_ sender: Any) {

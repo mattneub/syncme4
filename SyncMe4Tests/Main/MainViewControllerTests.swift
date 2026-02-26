@@ -26,6 +26,16 @@ struct MainViewControllerTests {
         #expect(subject.datasource is MainDatasource)
     }
 
+    @Test("progress interface is hidden, text fields are emptied")
+    func progressInterface() {
+        subject.loadViewIfNeeded()
+        #expect(subject.nowProcessing.isHidden)
+        #expect(subject.currentFolder.isHidden)
+        #expect(subject.cancelButton.isHidden)
+        #expect(subject.leftSelected.stringValue == "")
+        #expect(subject.rightSelected.stringValue == "")
+    }
+
     @Test("viewDidLoad: configures table view")
     func viewDidLoad() {
         subject.loadViewIfNeeded()
@@ -80,6 +90,20 @@ struct MainViewControllerTests {
         await subject.present(state)
         #expect(datasource.methodsCalled == ["present(_:)"])
         #expect(datasource.statePresented == state)
+    }
+
+    @Test("receive currentFolder: populates and shows, or hides, progress interface")
+    func currentFolder() async {
+        subject.loadViewIfNeeded()
+        await subject.receive(.currentFolder("howdy"))
+        #expect(!subject.nowProcessing.isHidden)
+        #expect(!subject.currentFolder.isHidden)
+        #expect(!subject.cancelButton.isHidden)
+        #expect(subject.currentFolder.stringValue == "howdy")
+        await subject.receive(.currentFolder(nil))
+        #expect(subject.nowProcessing.isHidden)
+        #expect(subject.currentFolder.isHidden)
+        #expect(subject.cancelButton.isHidden)
     }
 
     @Test("textFieldChanged: sends left/right field changed depending on sender")

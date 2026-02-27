@@ -160,6 +160,25 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented == [subject.state])
     }
 
+    @Test("receive unsort: calls sorter with empty sort descriptors, configures state, presents")
+    func unsort() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        sorter.entriesToReturn = [entry1, entry2]
+        let dummy = Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)
+        subject.state.results = [dummy]
+        subject.state.selectedResults = [1, 2, 3]
+        subject.state.unsorted = false
+        await subject.receive(.unsort)
+        #expect(sorter.methodsCalled == ["sort(_:using:)"])
+        #expect(sorter.entries == [dummy])
+        #expect(sorter.sortDescriptors == [])
+        #expect(subject.state.results == [entry1, entry2])
+        #expect(subject.state.unsorted == true)
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
+    }
+
     @Test("receive updateResults: calls sorter, configures state, presents")
     func updateResults() async {
         let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)

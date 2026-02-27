@@ -130,4 +130,19 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.preflight)
         }
     }
+
+    @IBAction func doUnsort(_ sender: Any) {
+        Task {
+            await processor?.receive(.unsort)
+        }
+    }
+}
+
+extension MainViewController: NSMenuItemValidation {
+    func validateMenuItem(_ item: NSMenuItem) -> Bool {
+        switch item.action {
+        case #selector(doUnsort): return tableView.numberOfRows > 0
+        default: return true
+        }
+    }
 }

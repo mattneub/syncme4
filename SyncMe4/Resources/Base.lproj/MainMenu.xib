@@ -347,6 +347,9 @@
                         <items>
                             <menuItem title="Unsort" id="eoZ-iF-Q9K">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doUnsort:" target="-1" id="gNg-8L-lSe"/>
+                                </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="RX9-Ga-tfs"/>
                             <menuItem title="Remove From List" id="1U8-XR-ujv">

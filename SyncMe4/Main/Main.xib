@@ -22,11 +22,11 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="682" height="421"/>
+        <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="682" height="392"/>
             <subviews>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0Sl-S4-a1V">
-                    <rect key="frame" x="9" y="384" width="28" height="14"/>
+                    <rect key="frame" x="9" y="326" width="28" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="nPc-iZ-K5H"/>
                     </constraints>
@@ -37,7 +37,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Obs-Zq-7B7">
-                    <rect key="frame" x="9" y="325" width="35" height="14"/>
+                    <rect key="frame" x="9" y="267" width="35" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="auP-jh-AFi"/>
                     </constraints>
@@ -48,7 +48,7 @@
                     </textFieldCell>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xc6-r8-rUl">
-                    <rect key="frame" x="592" y="356" width="70" height="22"/>
+                    <rect key="frame" x="592" y="298" width="70" height="22"/>
                     <buttonCell key="cell" type="push" title="Choose..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="A7n-Bh-SLZ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -61,7 +61,7 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5Pc-zB-Gjl">
-                    <rect key="frame" x="20" y="297" width="70" height="22"/>
+                    <rect key="frame" x="20" y="239" width="70" height="22"/>
                     <buttonCell key="cell" type="push" title="Choose..." bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1Q2-Hm-Vyb">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>
@@ -74,7 +74,7 @@
                     </connections>
                 </button>
                 <textField focusRingType="none" horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="449" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="bfJ-Kp-M16" customClass="FolderTextField" customModule="SyncMe4" customModuleProvider="target">
-                    <rect key="frame" x="20" y="356" width="562" height="22"/>
+                    <rect key="frame" x="20" y="298" width="562" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="JOL-fM-Ofd"/>
                     </constraints>
@@ -88,7 +88,7 @@
                     </connections>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="449" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="mKY-Gb-ftO" customClass="FolderTextField" customModule="SyncMe4" customModuleProvider="target">
-                    <rect key="frame" x="100" y="297" width="562" height="22"/>
+                    <rect key="frame" x="100" y="239" width="562" height="22"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="22" id="UuC-RP-9JC"/>
                     </constraints>
@@ -102,7 +102,7 @@
                     </connections>
                 </textField>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TWo-QW-eps">
-                    <rect key="frame" x="303" y="253" width="76" height="24"/>
+                    <rect key="frame" x="303" y="195" width="76" height="24"/>
                     <buttonCell key="cell" type="push" title="Preflight" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SSd-99-hBK">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -115,7 +115,7 @@
                     </connections>
                 </button>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="16l-FV-gOT">
-                    <rect key="frame" x="18" y="230" width="78" height="11"/>
+                    <rect key="frame" x="18" y="172" width="78" height="11"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="11" id="6zv-qV-P5A"/>
                     </constraints>
@@ -126,7 +126,7 @@
                     </textFieldCell>
                 </textField>
                 <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="499" translatesAutoresizingMaskIntoConstraints="NO" id="iN5-gY-9sH">
-                    <rect key="frame" x="18" y="208" width="646" height="14"/>
+                    <rect key="frame" x="18" y="150" width="646" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="KF8-Ig-kVS"/>
                     </constraints>
@@ -137,13 +137,13 @@
                     </textFieldCell>
                 </textField>
                 <scrollView autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zBv-le-Kd3">
-                    <rect key="frame" x="20" y="53" width="642" height="147"/>
-                    <clipView key="contentView" ambiguous="YES" id="3lI-rM-cZH">
-                        <rect key="frame" x="1" y="1" width="640" height="145"/>
+                    <rect key="frame" x="20" y="53" width="642" height="89"/>
+                    <clipView key="contentView" id="3lI-rM-cZH">
+                        <rect key="frame" x="1" y="1" width="640" height="87"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="15" headerView="hKq-PM-4Yw" viewBased="YES" id="UW6-Cj-Qkq">
-                                <rect key="frame" x="0.0" y="0.0" width="640" height="117"/>
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="15" headerView="hKq-PM-4Yw" viewBased="YES" id="UW6-Cj-Qkq">
+                                <rect key="frame" x="0.0" y="0.0" width="640" height="59"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -264,7 +264,7 @@
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="gTG-2V-5Z7"/>
                 </imageView>
                 <button horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="c6b-pQ-lPF">
-                    <rect key="frame" x="648" y="228.5" width="14" height="14"/>
+                    <rect key="frame" x="648" y="170.5" width="14" height="14"/>
                     <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" controlSize="small" imageScaling="proportionallyUpOrDown" inset="2" id="NOf-dG-1Ye">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="smallSystem"/>

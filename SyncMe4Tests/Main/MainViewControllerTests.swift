@@ -161,4 +161,23 @@ struct MainViewControllerTests {
         await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.preflight])
     }
+
+    @Test("doUnsort: sends unsort")
+    func unsort() async {
+        subject.doUnsort(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.unsort])
+    }
+
+    @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
+    func validateDoUnsort() {
+        let tableView = MockTableView()
+        tableView._numberOfRows = 0
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doUnsort(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._numberOfRows = 1
+        #expect(subject.validateMenuItem(item) == true)
+    }
 }

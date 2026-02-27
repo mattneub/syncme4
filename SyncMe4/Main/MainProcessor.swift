@@ -58,6 +58,11 @@ final class MainProcessor: Processor {
         case .selectedRows(let indexSet):
             state.selectedResults = indexSet
             await presenter?.present(state)
+        case .unsort:
+            state.selectedResults = []
+            state.results = services.sorter.sort(state.results, using: [])
+            state.unsorted = true
+            await presenter?.present(state)
         case .updateResults(let sortDescriptors):
             state.selectedResults = []
             state.results = services.sorter.sort(state.results, using: sortDescriptors)

@@ -89,15 +89,3 @@ private final class MyViewController: NSViewController {
     @IBAction func rightFieldChoose(_ sender: Any) {}
     @IBAction func preflight(_ sender: Any) {}
 }
-
-private final class MockTableView: NSTableView {
-    var _selectedRow: Int = 0
-    var _selectedRowIndexes = IndexSet([1, 2])
-    var _sortDescriptors: [NSSortDescriptor] = []
-    override var selectedRow: Int { _selectedRow }
-    override var selectedRowIndexes: IndexSet { _selectedRowIndexes }
-    override var sortDescriptors: [NSSortDescriptor] {
-        get { _sortDescriptors }
-        set {}
-    }
-}

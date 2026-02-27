@@ -183,6 +183,26 @@ struct MainViewControllerTests {
         #expect(processor.thingsReceived == [.removeFromList([1, 2, 3])])
     }
 
+    @Test("doReverseDirections: sends reverseDirection with table view selected row")
+    func reverseDirection() async {
+        let tableView = MockTableView()
+        tableView._selectedRow = 1
+        subject.tableView = tableView
+        subject.doReverseDirection(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.reverseDirection(1)])
+    }
+
+    @Test("reveal: sends reveal with table view selected row")
+    func reveal() async {
+        let tableView = MockTableView()
+        tableView._selectedRow = 1
+        subject.tableView = tableView
+        subject.doReveal(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.reveal(1)])
+    }
+
     @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
     func validateDoUnsort() {
         let tableView = MockTableView()
@@ -205,5 +225,33 @@ struct MainViewControllerTests {
         #expect(subject.validateMenuItem(item) == false)
         tableView._selectedRowIndexes = [1]
         #expect(subject.validateMenuItem(item) == true)
+    }
+
+    @Test("validateMenuItem: if doReverseDirection: depends on whether table view has one selected row")
+    func validateDoReverseDirection() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doReverseDirection(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
+        #expect(subject.validateMenuItem(item) == false)
+    }
+
+    @Test("validateMenuItem: if doReveal: depends on whether table view has one selected row")
+    func validateDoReveal() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doReveal(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
+        #expect(subject.validateMenuItem(item) == false)
     }
 }

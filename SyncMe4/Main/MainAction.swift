@@ -5,6 +5,9 @@ enum MainAction: Equatable {
     case leftFieldChoose(NSWindow)
     case preflight
     case removeFromList(IndexSet)
+    case reveal(Int)
+    case revealTarget(Int)
+    case reverseDirection(Int)
     case rightFieldChanged(URL?)
     case rightFieldChoose(NSWindow)
     case selectedRows(IndexSet)

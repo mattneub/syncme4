@@ -54,6 +54,22 @@ final class MainProcessor: Processor {
             }
             state.selectedResults = []
             await presenter?.present(state)
+        case .reveal(let index):
+            let entry = state.results[index]
+            services.finderScripter.reveal(entry.copyFrom)
+        case .revealTarget(let index):
+            let entry = state.results[index]
+            services.finderScripter.reveal(entry.copyTo)
+        case .reverseDirection(let index):
+            var entry = state.results[index]
+            guard entry.why == .olderLeft || entry.why == .olderRight else {
+                services.beeper.beep()
+                return
+            }
+            entry.why = entry.why == .olderLeft ? .olderRight : .olderLeft
+            swap(&entry.copyFrom, &entry.copyTo)
+            state.results[index] = entry
+            await presenter?.present(state)
         case .rightFieldChanged(let url):
             state.rightFolder = url
         case .rightFieldChoose(let window):

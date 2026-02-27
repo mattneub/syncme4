@@ -138,6 +138,73 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented == [subject.state])
     }
 
+    @Test("receive reveal: calls finderScripter with copyFrom of entry at given index")
+    func reveal() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        subject.state.results = [entry1, entry2, entry3]
+        await subject.receive(.reveal(1))
+        #expect(finderScripter.methodsCalled == ["reveal(_:)"])
+        #expect(finderScripter.url == entry2.copyFrom)
+    }
+
+    @Test("receive revealTarget: calls finderScripter with copyTo of entry at given index")
+    func revealTarget() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderRight)
+        subject.state.results = [entry1, entry2, entry3]
+        await subject.receive(.revealTarget(1))
+        #expect(finderScripter.methodsCalled == ["reveal(_:)"])
+        #expect(finderScripter.url == entry2.copyTo)
+    }
+
+    @Test("reverseDirection: if entry at index has reason .absent..., beeps and stops")
+    func reverseDirectionAbsent() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentLeft)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        subject.state.results = [entry1, entry2, entry3]
+        await subject.receive(.reverseDirection(1))
+        #expect(beeper.methodsCalled == ["beep()"])
+        #expect(presenter.statesPresented.isEmpty)
+        beeper.methodsCalled = []
+        await subject.receive(.reverseDirection(2))
+        #expect(beeper.methodsCalled == ["beep()"])
+        #expect(presenter.statesPresented.isEmpty)
+    }
+
+    @Test("reverseDirection: if entry at index has reason .older..., swaps direction and copyto/from, presents")
+    func reverseDirectionOlder() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        subject.state.results = [entry1, entry2, entry3]
+        await subject.receive(.reverseDirection(0))
+        #expect(subject.state.results[0].id == entry1.id)
+        #expect(subject.state.results[0].copyFrom == entry1.copyTo)
+        #expect(subject.state.results[0].copyTo == entry1.copyFrom)
+        #expect(subject.state.results[0].why == .olderRight)
+        #expect(subject.state.results[1] == entry2)
+        #expect(subject.state.results[2] == entry3)
+    }
+
+    @Test("reverseDirection: if entry at index has reason .older..., swaps direction and copyto/from, presents")
+    func reverseDirectionOlder2() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        subject.state.results = [entry1, entry2, entry3]
+        await subject.receive(.reverseDirection(1))
+        #expect(subject.state.results[0] == entry1)
+        #expect(subject.state.results[1].id == entry2.id)
+        #expect(subject.state.results[1].copyFrom == entry2.copyTo)
+        #expect(subject.state.results[1].copyTo == entry2.copyFrom)
+        #expect(subject.state.results[1].why == .olderLeft)
+        #expect(subject.state.results[2] == entry3)
+    }
+
     @Test("receive rightFieldChanged: sets state rightFolder")
     func rightFieldChanged() async {
         let url = URL(string: "https://www.example.com")!

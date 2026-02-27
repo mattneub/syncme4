@@ -71,6 +71,10 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             tableView.sortDescriptors = []
         }
         await datasource.present(state)
+        // order matters
+        if tableView.selectedRowIndexes != state.selectedResults {
+            tableView.selectRowIndexes(state.selectedResults, byExtendingSelection: false)
+        }
     }
 
     func receive(_ effect: MainEffect) async {
@@ -136,6 +140,24 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.removeFromList(tableView.selectedRowIndexes))
         }
     }
+
+    @IBAction func doReverseDirection(_ sender: Any) {
+        Task {
+            await processor?.receive(.reverseDirection(tableView.selectedRow))
+        }
+    }
+
+    @IBAction func doReveal(_ sender: Any) {
+        Task {
+            await processor?.receive(.reveal(tableView.selectedRow))
+        }
+    }
+
+    @IBAction func doRevealTarget(_ sender: Any) {
+        Task {
+            await processor?.receive(.revealTarget(tableView.selectedRow))
+        }
+    }
 }
 
 extension MainViewController: NSMenuItemValidation {
@@ -143,6 +165,9 @@ extension MainViewController: NSMenuItemValidation {
         switch item.action {
         case #selector(doUnsort): return tableView.numberOfRows > 0
         case #selector(doRemoveFromList): return tableView.selectedRowIndexes.count > 0
+        case #selector(doReverseDirection): return tableView.selectedRowIndexes.count == 1
+        case #selector(doReveal): return tableView.selectedRowIndexes.count == 1
+        case #selector(doRevealTarget): return tableView.selectedRowIndexes.count == 1
         default: return true
         }
     }

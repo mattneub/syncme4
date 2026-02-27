@@ -363,13 +363,22 @@ CA
                             </menuItem>
                             <menuItem title="Reverse Direction" id="Urg-11-e49">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doReverseDirection:" target="-1" id="Glk-dX-n39"/>
+                                </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="kEu-oe-A6e"/>
                             <menuItem title="Reveal" id="KI3-K4-cGZ">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doReveal:" target="-1" id="Bpg-zR-3GS"/>
+                                </connections>
                             </menuItem>
                             <menuItem title="Reveal Target" alternate="YES" id="DCu-OJ-tyy">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="doRevealTarget:" target="-1" id="77u-GI-q5U"/>
+                                </connections>
                             </menuItem>
                             <menuItem title="Move To Trash" id="uAW-3b-1qJ">
                                 <modifierMask key="keyEquivalentModifierMask"/>

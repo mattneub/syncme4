@@ -148,6 +148,7 @@ struct PreflighterTests: ~Copyable {
     func dive() async {
         let subject = Preflighter()
         subject.currentFolder = ""
+        try? await Task.sleep(for: .seconds(0.1))
         var currentFolders = [String?]()
         let task = Task {
             let observations = Observations { subject.currentFolder }
@@ -155,6 +156,7 @@ struct PreflighterTests: ~Copyable {
                 currentFolders.append(currentFolder)
             }
         }
+        try? await Task.sleep(for: .seconds(0.1))
         let url1 = url1.appending(component: "same", directoryHint: .isDirectory)
         let url2 = url2.appending(component: "same", directoryHint: .isDirectory)
         try! FileManager.default.createDirectory(at: url1, withIntermediateDirectories: true)
@@ -167,14 +169,14 @@ struct PreflighterTests: ~Copyable {
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
         #expect(result[0].why == .absentRight)
-        await #while(currentFolders.count < 5)
+        try? await Task.sleep(for: .seconds(1))
         let expectedFolders = [
             self.url1,
             url1,
             self.url2,
             url2
         ].map { $0.path(percentEncoded: false) }
-        let expected: [String?] = expectedFolders + [nil]
+        let expected: [String?] = [""] + expectedFolders + [nil]
         #expect(currentFolders == expected)
         task.cancel()
     }

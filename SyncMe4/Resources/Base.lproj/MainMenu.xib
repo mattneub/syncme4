@@ -353,7 +353,13 @@
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="RX9-Ga-tfs"/>
                             <menuItem title="Remove From List" id="1U8-XR-ujv">
+                                <string key="keyEquivalent" base64-UTF8="YES">
+CA
+</string>
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doRemoveFromList:" target="-1" id="cKT-AB-XaO"/>
+                                </connections>
                             </menuItem>
                             <menuItem title="Reverse Direction" id="Urg-11-e49">
                                 <modifierMask key="keyEquivalentModifierMask"/>

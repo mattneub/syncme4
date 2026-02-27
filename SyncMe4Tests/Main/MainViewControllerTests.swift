@@ -169,6 +169,16 @@ struct MainViewControllerTests {
         #expect(processor.thingsReceived == [.unsort])
     }
 
+    @Test("doRemoveFromList: sends removeFromList with table view selected row indexes")
+    func removeFromList() async {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = [1, 2, 3]
+        subject.tableView = tableView
+        subject.doRemoveFromList(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.removeFromList([1, 2, 3])])
+    }
+
     @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
     func validateDoUnsort() {
         let tableView = MockTableView()
@@ -178,6 +188,18 @@ struct MainViewControllerTests {
         item.action = #selector(subject.doUnsort(_:))
         #expect(subject.validateMenuItem(item) == false)
         tableView._numberOfRows = 1
+        #expect(subject.validateMenuItem(item) == true)
+    }
+
+    @Test("validateMenuItem: if doRemoveFromList: depends on whether table view has selected rows")
+    func validateDoRemoveFromList() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doRemoveFromList(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
         #expect(subject.validateMenuItem(item) == true)
     }
 }

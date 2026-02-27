@@ -34,9 +34,10 @@ final class Preflighter: PreflighterType {
     func compareFolders(folder1: URL, folder2: URL) async throws -> [Entry] {
         var list = [Entry]()
         let stopList = [String]() // TODO: fetch stop list from user defaults
-        try listInto(&list, withFolder: folder1, withFolder: folder2, firstPass: true, stopList: stopList)
-        try listInto(&list, withFolder: folder2, withFolder: folder1, firstPass: false, stopList: stopList)
+        try await listInto(&list, withFolder: folder1, withFolder: folder2, firstPass: true, stopList: stopList)
+        try await listInto(&list, withFolder: folder2, withFolder: folder1, firstPass: false, stopList: stopList)
         currentFolder = nil // signal finished
+        await Task.yield()
         return list
     }
 
@@ -56,8 +57,9 @@ final class Preflighter: PreflighterType {
         withFolder folder2: URL,
         firstPass: Bool,
         stopList: [String]
-    ) throws {
+    ) async throws {
         currentFolder = folder1.path(percentEncoded: false)
+        await Task.yield()
         var keys: Set<URLResourceKey> = [
             .isDirectoryKey, .isPackageKey, .isAliasFileKey, .isSymbolicLinkKey
         ]
@@ -88,7 +90,7 @@ final class Preflighter: PreflighterType {
                 guard let itemIsPackage = itemVals.isPackage else { continue }
                 guard let cloneItemIsPackage = cloneVals.isPackage else { continue }
                 if !itemIsPackage && !cloneItemIsPackage {
-                    try listInto(&theList, withFolder: item, withFolder: cloneItem, firstPass: firstPass, stopList: stopList)
+                    try await listInto(&theList, withFolder: item, withFolder: cloneItem, firstPass: firstPass, stopList: stopList)
                     continue
                 }
             }

@@ -121,6 +121,21 @@ final class MainProcessorTests {
         }
     }
 
+    @Test("receive removeFromList: deletes results at given indexes, configures state, presents")
+    func removeFromList() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [0, 2]
+        subject.state.unsorted = false
+        await subject.receive(.removeFromList([0, 2]))
+        #expect(subject.state.results == [entry2])
+        #expect(subject.state.selectedResults == [])
+        #expect(subject.state.unsorted == false)
+        #expect(presenter.statesPresented == [subject.state])
+    }
+
     @Test("receive rightFieldChanged: sets state rightFolder")
     func rightFieldChanged() async {
         let url = URL(string: "https://www.example.com")!

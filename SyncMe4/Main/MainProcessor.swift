@@ -48,6 +48,12 @@ final class MainProcessor: Processor {
                 progressWatchingTask?.cancel()
                 print(error) // TODO: do something useful with error
             }
+        case .removeFromList(let indexes):
+            indexes.map { Int($0) }.sorted { $0 > $1 }.forEach {
+                state.results.remove(at: $0)
+            }
+            state.selectedResults = []
+            await presenter?.present(state)
         case .rightFieldChanged(let url):
             state.rightFolder = url
         case .rightFieldChoose(let window):

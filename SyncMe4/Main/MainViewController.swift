@@ -136,12 +136,19 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.unsort)
         }
     }
+
+    @IBAction func doRemoveFromList(_ sender: Any) {
+        Task {
+            await processor?.receive(.removeFromList(tableView.selectedRowIndexes))
+        }
+    }
 }
 
 extension MainViewController: NSMenuItemValidation {
     func validateMenuItem(_ item: NSMenuItem) -> Bool {
         switch item.action {
         case #selector(doUnsort): return tableView.numberOfRows > 0
+        case #selector(doRemoveFromList): return tableView.selectedRowIndexes.count > 0
         default: return true
         }
     }

@@ -9,6 +9,7 @@ final class MainProcessorTests {
     let beeper = MockBeeper()
     let preflighter = MockPreflighter()
     let sorter = MockSorter()
+    let finderScripter = MockFinderScripter()
 
     init() {
         subject.presenter = presenter
@@ -16,6 +17,7 @@ final class MainProcessorTests {
         services.beeper = beeper
         services.preflighter = preflighter
         services.sorter = sorter
+        services.finderScripter = finderScripter
     }
 
     isolated
@@ -173,6 +175,12 @@ final class MainProcessorTests {
         await subject.receive(.selectedRows([1, 3, 5]))
         #expect(subject.state.selectedResults == [1, 3, 5])
         #expect(presenter.statesPresented == [subject.state])
+    }
+
+    @Test("receive tickle: calls finder scripter tickle")
+    func tickle() async {
+        await subject.receive(.tickle)
+        #expect(finderScripter.methodsCalled == ["tickle()"])
     }
 
     @Test("receive unsort: calls sorter with empty sort descriptors, configures state, presents")

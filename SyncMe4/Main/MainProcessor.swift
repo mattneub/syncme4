@@ -64,6 +64,8 @@ final class MainProcessor: Processor {
         case .selectedRows(let indexSet):
             state.selectedResults = indexSet
             await presenter?.present(state)
+        case .tickle:
+            services.finderScripter.tickle()
         case .unsort:
             state.selectedResults = []
             state.results = services.sorter.sort(state.results, using: [])

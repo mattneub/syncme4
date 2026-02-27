@@ -8,6 +8,7 @@ enum MainAction: Equatable {
     case rightFieldChanged(URL?)
     case rightFieldChoose(NSWindow)
     case selectedRows(IndexSet)
+    case tickle
     case unsort
     case updateResults([NSSortDescriptor])
 }

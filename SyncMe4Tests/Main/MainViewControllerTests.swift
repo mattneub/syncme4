@@ -36,10 +36,12 @@ struct MainViewControllerTests {
         #expect(subject.rightSelected.stringValue == "")
     }
 
-    @Test("viewDidLoad: configures table view")
-    func viewDidLoad() {
+    @Test("viewDidLoad: configures table view, sends tickle")
+    func viewDidLoad() async {
         subject.loadViewIfNeeded()
         #expect(subject.tableView.allowsMultipleSelection == true)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.tickle])
     }
 
     @Test("present: sets leftField and rightField object value")
@@ -122,6 +124,8 @@ struct MainViewControllerTests {
     @Test("textFieldChanged: sends left/right field changed depending on sender")
     func textFieldChanged() async {
         subject.loadViewIfNeeded()
+        await #while(processor.thingsReceived.isEmpty)
+        processor.thingsReceived = []
         let url1 = URL(string: "http://www.example1.com")!
         let url2 = URL(string: "http://www.example2.com")!
         subject.leftField.objectValue = url1

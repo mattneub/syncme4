@@ -8,12 +8,14 @@ final class MainProcessorTests {
     let openPanelOpener = MockOpenPanelOpener()
     let beeper = MockBeeper()
     let preflighter = MockPreflighter()
+    let sorter = MockSorter()
 
     init() {
         subject.presenter = presenter
         services.openPanelOpener = openPanelOpener
         services.beeper = beeper
         services.preflighter = preflighter
+        services.sorter = sorter
     }
 
     isolated
@@ -74,6 +76,25 @@ final class MainProcessorTests {
         #expect(presenter.thingsReceived.count == 4)
         #expect(presenter.thingsReceived == [.currentFolder("Jack"), .currentFolder("Moe"), .currentFolder("Manny"), .currentFolder(nil)])
         #expect(subject.progressWatchingTask?.isCancelled == true)
+    }
+
+    @Test("receive preflight: renumbers preflighter results, sets state unsorted")
+    func preflightUnsorted() async {
+        subject.state.leftFolder = URL(string: "http://www.example.com")!
+        subject.state.rightFolder = URL(string: "http://www.example2.com")!
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        preflighter.entries = [entry1, entry2]
+        subject.state.unsorted = false
+        subject.state.results = [Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)]
+        await subject.receive(.preflight)
+        #expect(subject.state.unsorted == true)
+        #expect(subject.state.results.count == 2)
+        #expect(subject.state.results[0].id == entry1.id)
+        #expect(subject.state.results[0].originalOrder == 0)
+        #expect(subject.state.results[1].id == entry2.id)
+        #expect(subject.state.results[1].originalOrder == 1)
+        #expect(presenter.statesPresented.last == subject.state)
     }
 
     @Test("receive preflight: if not both folders in state, beeps, does not preflight")
@@ -139,4 +160,22 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented == [subject.state])
     }
 
+    @Test("receive updateResults: calls sorter, configures state, presents")
+    func updateResults() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        sorter.entriesToReturn = [entry1, entry2]
+        let sortDescriptor = NSSortDescriptor(key: "howdy", ascending: false)
+        let dummy = Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)
+        subject.state.results = [dummy]
+        subject.state.selectedResults = [1, 2, 3]
+        await subject.receive(.updateResults([sortDescriptor]))
+        #expect(sorter.methodsCalled == ["sort(_:using:)"])
+        #expect(sorter.entries == [dummy])
+        #expect(sorter.sortDescriptors == [sortDescriptor])
+        #expect(subject.state.results == [entry1, entry2])
+        #expect(subject.state.unsorted == false)
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
+    }
 }

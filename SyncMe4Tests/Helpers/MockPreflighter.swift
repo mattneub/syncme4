@@ -4,11 +4,11 @@ import AppKit
 @Observable
 final class MockPreflighter: PreflighterType {
     var currentFolder: String?
-    var methodsCalled = [String]()
-    var folder1: URL?
-    var folder2: URL?
-    var entries = [Entry]()
-    var folders = [String]()
+    @ObservationIgnored var methodsCalled = [String]()
+    @ObservationIgnored var folder1: URL?
+    @ObservationIgnored var folder2: URL?
+    @ObservationIgnored var entries = [Entry]()
+    @ObservationIgnored var folders = [String]()
 
     func prepare() {
         methodsCalled.append(#function)

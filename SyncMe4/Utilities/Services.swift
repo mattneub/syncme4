@@ -3,4 +3,5 @@ final class Services {
     var openPanelOpener: any OpenPanelOpenerType = OpenPanelOpener()
     var openPanelFactory: any OpenPanelFactoryType = OpenPanelFactory()
     var preflighter: any PreflighterType = Preflighter()
+    var sorter: any SorterType = Sorter()
 }

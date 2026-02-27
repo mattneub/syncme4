@@ -26,15 +26,23 @@ final class MainProcessor: Processor {
             }
             do {
                 // clear the decks
-                // TODO: there may be other things we need to do here, such as disable everything (like the Preflight button, choose buttons, etc.)
+                // TODO: there may be other things we need to do here, such as disable everything
+                // (like the Preflight button, choose buttons, etc.)
+                // so far, however, the comparison is so fast that it doesn't even matter
                 state.selectedResults = []
                 state.results = []
                 await presenter?.present(state)
                 // start watching as the results pour in
                 observePreflighter()
-                let results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
-                // display the results
+                var results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+                // annotate and display the results
+                results = results.enumerated().map { index, result in
+                    var result = result
+                    result.originalOrder = index
+                    return result
+                }
                 state.results = results
+                state.unsorted = true
                 await presenter?.present(state)
             } catch {
                 progressWatchingTask?.cancel()
@@ -49,6 +57,11 @@ final class MainProcessor: Processor {
             }
         case .selectedRows(let indexSet):
             state.selectedResults = indexSet
+            await presenter?.present(state)
+        case .updateResults(let sortDescriptors):
+            state.selectedResults = []
+            state.results = services.sorter.sort(state.results, using: sortDescriptors)
+            state.unsorted = false
             await presenter?.present(state)
         }
     }

@@ -20,4 +20,7 @@ struct MainState: Equatable {
     var arrow: String? {
         selectedResult?.why.imageName
     }
+
+    /// When true, the table view's sort descriptors should be emptied.
+    var unsorted = true
 }

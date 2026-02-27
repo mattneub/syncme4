@@ -60,15 +60,15 @@ private struct MainDatasourceTests {
 
     @Test("datasource sortDescriptorsDidChange: sends updateResults to processor")
     func sortDescriptorsDidChange() async throws {
-//        let tableView = MockTableView()
-//        let sortDescriptor = NSSortDescriptor(key: "howdy", ascending: false)
-//        tableView._sortDescriptors = [sortDescriptor]
-//        let datasource = try #require(subject.datasource)
-//        let datasourceProcessor = try #require(datasource.processor)
-//        #expect(datasourceProcessor === processor)
-//        datasource.tableView(tableView, sortDescriptorsDidChange: [])
-//        await #while(processor.thingsReceived.isEmpty)
-//        #expect(processor.thingsReceived == [.updateResults([sortDescriptor])])
+        let tableView = MockTableView()
+        let sortDescriptor = NSSortDescriptor(key: "howdy", ascending: false)
+        tableView._sortDescriptors = [sortDescriptor]
+        let datasource = try #require(subject.datasource)
+        let datasourceProcessor = try #require(datasource.processor)
+        #expect(datasourceProcessor === processor)
+        datasource.tableView(tableView, sortDescriptorsDidChange: [])
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.updateResults([sortDescriptor])])
     }
 }
 

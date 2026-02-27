@@ -79,6 +79,19 @@ struct MainViewControllerTests {
         #expect(subject.arrow.image == NSImage(named: "rightarrowgreen"))
     }
 
+    @Test("present: if unsorted is true, empties table view sort descriptors")
+    func presentSortDescriptors() async {
+        subject.loadViewIfNeeded()
+        subject.tableView.sortDescriptors = [NSSortDescriptor(key: "dummy", ascending: true)]
+        var state = MainState()
+        state.unsorted = false
+        await(subject.present(state))
+        #expect(subject.tableView.sortDescriptors == [NSSortDescriptor(key: "dummy", ascending: true)])
+        state.unsorted = true
+        await(subject.present(state))
+        #expect(subject.tableView.sortDescriptors == [])
+    }
+
     @Test("present: presents to datasource")
     func presentDatasource() async {
         subject.loadViewIfNeeded()

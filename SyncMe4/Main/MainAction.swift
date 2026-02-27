@@ -7,4 +7,5 @@ enum MainAction: Equatable {
     case rightFieldChanged(URL?)
     case rightFieldChoose(NSWindow)
     case selectedRows(IndexSet)
+    case updateResults([NSSortDescriptor])
 }

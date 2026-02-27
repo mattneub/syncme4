@@ -73,6 +73,9 @@ final class MainViewController: NSViewController, ReceiverPresenter {
         leftSelected.stringValue = state.leftPath ?? ""
         rightSelected.stringValue = state.rightPath ?? ""
         arrow.image = if let arrow = state.arrow { NSImage(named: arrow) } else { nil }
+        if state.unsorted {
+            tableView.sortDescriptors = []
+        }
         await datasource.present(state)
     }
 

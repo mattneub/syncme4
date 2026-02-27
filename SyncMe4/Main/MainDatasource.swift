@@ -88,8 +88,8 @@ final class SortableDiffableDataSource: NSTableViewDiffableDataSource<String, UU
 
     /// NSTableViewDataSource optional method.
     @objc func tableView(_ tableView: NSTableView, sortDescriptorsDidChange _: [NSSortDescriptor]) {
-//        Task {
-//            await processor?.receive(.updateResults(tableView.sortDescriptors))
-//        }
+        Task {
+            await processor?.receive(.updateResults(tableView.sortDescriptors))
+        }
     }
 }

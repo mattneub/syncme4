@@ -13,6 +13,7 @@ enum MainAction: Equatable {
     case selectedRows(IndexSet)
     case tickle
     case trash(IndexSet)
+    case trashTarget(IndexSet)
     case unsort
     case updateResults([NSSortDescriptor])
 }

@@ -49,7 +49,7 @@ final class MainProcessor: Processor {
                 print(error) // TODO: do something useful with error
             }
         case .removeFromList(let indexes):
-            indexes.map { Int($0) }.sorted(by: >).forEach {
+            indexes.sorted(by: >).forEach {
                 state.results.remove(at: $0)
             }
             state.selectedResults = []
@@ -62,11 +62,11 @@ final class MainProcessor: Processor {
             services.finderScripter.reveal(entry.copyTo)
         case .reverseDirection(let index):
             var entry = state.results[index]
-            guard entry.why == .olderLeft || entry.why == .olderRight else {
+            guard entry.why.destinationExists else {
                 services.beeper.beep()
                 return
             }
-            entry.why = entry.why == .olderLeft ? .olderRight : .olderLeft
+            entry.why = entry.why.opposite
             swap(&entry.copyFrom, &entry.copyTo)
             state.results[index] = entry
             await presenter?.present(state)
@@ -83,23 +83,15 @@ final class MainProcessor: Processor {
         case .tickle:
             services.finderScripter.tickle()
         case .trash(let indexSet):
-            var indexes = Array(indexSet).map { Int($0) }.sorted(by: <)
-            var entries = state.results // work from a copy now, reconcile when finished
-            do {
-                while !indexes.isEmpty {
-                    let url = entries[indexes[0]].copyFrom
-                    try await Task { @concurrent in
-                        try await services.finderScripter.trash(url)
-                    }.value
-                    entries.remove(at: indexes[0])
-                    await presenter?.receive(.remove(indexes[0]))
-                    indexes.remove(at: 0)
-                    indexes = indexes.map { $0 - 1 }
-                }
-            } catch {}
-            state.results = entries
-            state.selectedResults = []
-            await presenter?.present(state)
+            await trash(indexSet, target: false)
+        case .trashTarget(let indexSet):
+            // meaningless to trash the target if there is no target, so require that _all_
+            // selected entries have destinations
+            guard indexSet.map({ state.results[$0] }).allSatisfy({ $0.why.destinationExists }) else {
+                services.beeper.beep()
+                return
+            }
+            await trash(indexSet, target: true)
         case .unsort:
             state.selectedResults = []
             state.results = services.sorter.sort(state.results, using: [])
@@ -132,4 +124,27 @@ final class MainProcessor: Processor {
             }
         }
     }
+
+    /// Implementation of receive `.trash` and `.trashTarget`.
+    func trash(_ indexSet: IndexSet, target: Bool) async {
+        var indexes = indexSet.sorted(by: <)
+        var entries = state.results // work from a copy now, reconcile when finished
+        do {
+            while !indexes.isEmpty {
+                let keyPath: KeyPath<Entry, URL> = target ? \.copyTo : \.copyFrom
+                let url = entries[indexes[0]][keyPath: keyPath]
+                try await Task { @concurrent in
+                    try await services.finderScripter.trash(url)
+                }.value
+                entries.remove(at: indexes[0])
+                await presenter?.receive(.remove(indexes[0]))
+                indexes.remove(at: 0)
+                indexes = indexes.map { $0 - 1 }
+            }
+        } catch {}
+        state.results = entries
+        state.selectedResults = []
+        await presenter?.present(state)
+    }
+
 }

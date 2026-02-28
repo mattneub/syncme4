@@ -166,6 +166,12 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.trash(tableView.selectedRowIndexes))
         }
     }
+
+    @IBAction func doTrashTarget(_ sender: Any) {
+        Task {
+            await processor?.receive(.trashTarget(tableView.selectedRowIndexes))
+        }
+    }
 }
 
 extension MainViewController: NSMenuItemValidation {
@@ -177,6 +183,7 @@ extension MainViewController: NSMenuItemValidation {
         case #selector(doReveal): return tableView.selectedRowIndexes.count == 1
         case #selector(doRevealTarget): return tableView.selectedRowIndexes.count == 1
         case #selector(doTrash): return tableView.selectedRowIndexes.count > 0
+        case #selector(doTrashTarget): return tableView.selectedRowIndexes.count > 0
         default: return true
         }
     }

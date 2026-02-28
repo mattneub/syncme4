@@ -224,13 +224,23 @@ struct MainViewControllerTests {
     }
 
     @Test("doTrash: sends trash with table view selected row indexes")
-    func revealTrash() async {
+    func doTrash() async {
         let tableView = MockTableView()
         tableView._selectedRowIndexes = [1, 2, 3]
         subject.tableView = tableView
         subject.doTrash(self)
         await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.trash([1, 2, 3])])
+    }
+
+    @Test("doTrashTarget: sends trashTarget with table view selected row indexes")
+    func doTrashTarget() async {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = [1, 2, 3]
+        subject.tableView = tableView
+        subject.doTrashTarget(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.trashTarget([1, 2, 3])])
     }
 
     @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
@@ -308,6 +318,20 @@ struct MainViewControllerTests {
         subject.tableView = tableView
         let item = NSMenuItem()
         item.action = #selector(subject.doTrash(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
+        #expect(subject.validateMenuItem(item) == true)
+    }
+
+    @Test("validateMenuItem: if doTrash: depends on whether table view has selected rows")
+    func validateDoTrashTarget() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doTrashTarget(_:))
         #expect(subject.validateMenuItem(item) == false)
         tableView._selectedRowIndexes = [1]
         #expect(subject.validateMenuItem(item) == true)

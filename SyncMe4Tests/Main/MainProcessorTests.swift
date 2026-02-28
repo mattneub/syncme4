@@ -61,7 +61,7 @@ final class MainProcessorTests {
     func preflight() async {
         subject.state.leftFolder = URL(string: "http://www.example.com")!
         subject.state.rightFolder = URL(string: "http://www.example2.com")!
-        let entry = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
+        let entry = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing2.com")!, why: .olderLeft)
         preflighter.entries = [entry]
         preflighter.folders = ["Manny", "Moe", "Jack"]
         subject.state.selectedResults = [1, 2, 3]
@@ -84,8 +84,8 @@ final class MainProcessorTests {
     func preflightUnsorted() async {
         subject.state.leftFolder = URL(string: "http://www.example.com")!
         subject.state.rightFolder = URL(string: "http://www.example2.com")!
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing3.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderRight)
         preflighter.entries = [entry1, entry2]
         subject.state.unsorted = false
         subject.state.results = [Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)]
@@ -125,9 +125,9 @@ final class MainProcessorTests {
 
     @Test("receive removeFromList: deletes results at given indexes, configures state, presents")
     func removeFromList() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing6.com")!, why: .olderRight)
         subject.state.results = [entry1, entry2, entry3]
         subject.state.selectedResults = [0, 2]
         subject.state.unsorted = false
@@ -140,9 +140,9 @@ final class MainProcessorTests {
 
     @Test("receive reveal: calls finderScripter with copyFrom of entry at given index")
     func reveal() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .olderRight)
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.reveal(1))
         #expect(finderScripter.methodsCalled == ["reveal(_:)"])
@@ -151,9 +151,9 @@ final class MainProcessorTests {
 
     @Test("receive revealTarget: calls finderScripter with copyTo of entry at given index")
     func revealTarget() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .olderRight)
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.revealTarget(1))
         #expect(finderScripter.methodsCalled == ["reveal(_:)"])
@@ -162,9 +162,9 @@ final class MainProcessorTests {
 
     @Test("reverseDirection: if entry at index has reason .absent..., beeps and stops")
     func reverseDirectionAbsent() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentLeft)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .absentLeft)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentRight)
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.reverseDirection(1))
         #expect(beeper.methodsCalled == ["beep()"])
@@ -177,9 +177,9 @@ final class MainProcessorTests {
 
     @Test("reverseDirection: if entry at index has reason .older..., swaps direction and copyto/from, presents")
     func reverseDirectionOlder() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentRight)
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.reverseDirection(0))
         #expect(subject.state.results[0].id == entry1.id)
@@ -192,9 +192,9 @@ final class MainProcessorTests {
 
     @Test("reverseDirection: if entry at index has reason .older..., swaps direction and copyto/from, presents")
     func reverseDirectionOlder2() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing.com")!, why: .absentRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentRight)
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.reverseDirection(1))
         #expect(subject.state.results[0] == entry1)
@@ -250,11 +250,11 @@ final class MainProcessorTests {
         #expect(finderScripter.methodsCalled == ["tickle()"])
     }
 
-    @Test("receive trash: calls finder scripter trash and presenter remove for each listed entry, reconciles state and presents")
+    @Test("receive trash: calls finder scripter trash with copyFrom and presenter remove for each listed entry, reconciles state and presents")
     func trash() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing6.com")!, why: .absentRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentRight)
         subject.state.results = [entry1, entry2, entry3]
         subject.state.selectedResults = [1, 2]
         await subject.receive(.trash([0, 2]))
@@ -268,9 +268,9 @@ final class MainProcessorTests {
 
     @Test("receive trash: if an error is returned, reconciles state and presents")
     func trashWithError() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
-        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing6.com")!, why: .absentRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentRight)
         subject.state.results = [entry1, entry2, entry3]
         subject.state.selectedResults = [1, 2]
         finderScripter.errorToThrow = NSError(domain: "domain", code: 0)
@@ -283,10 +283,59 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented == [subject.state])
     }
 
+    @Test("receive trashTarget: calls finder scripter trash with copyTo and presenter remove for each listed entry, reconciles state and presents")
+    func trashTarget() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .olderLeft)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [1, 2]
+        await subject.receive(.trashTarget([0, 2]))
+        #expect(finderScripter.methodsCalled == ["trash(_:)", "trash(_:)"])
+        #expect(finderScripter.urls == [URL(string: "http://www.nothing4.com")!, URL(string: "http://www.nothing6.com")!])
+        #expect(presenter.thingsReceived == [.remove(0), .remove(1)]) // because 2 becomes 1 after 0 is removed
+        #expect(subject.state.results == [entry2])
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
+    }
+
+    @Test("receive trashTarget: if an error is returned, reconciles state and presents")
+    func trashTargetWithError() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .olderLeft)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [1, 2]
+        finderScripter.errorToThrow = NSError(domain: "domain", code: 0)
+        await subject.receive(.trashTarget([0, 2]))
+        #expect(finderScripter.methodsCalled == ["trash(_:)"])
+        #expect(finderScripter.urls == [URL(string: "http://www.nothing4.com")!])
+        #expect(presenter.thingsReceived.isEmpty)
+        #expect(subject.state.results == [entry1, entry2, entry3])
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
+    }
+
+    @Test("receive trashTarget: if any chosen entry has no existing destination, beeps and stops")
+    func trashTargetNoDestination() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://www.nothing6.com")!, why: .absentLeft) // *
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [1, 2]
+        await subject.receive(.trashTarget([0, 2]))
+        #expect(beeper.methodsCalled == ["beep()"])
+        #expect(finderScripter.methodsCalled.isEmpty)
+        #expect(presenter.thingsReceived.isEmpty) // because 2 becomes 1 after 0 is removed
+        #expect(subject.state.results == [entry1, entry2, entry3])
+        #expect(subject.state.selectedResults == [1, 2])
+        #expect(presenter.statesPresented.isEmpty)
+    }
+
     @Test("receive unsort: calls sorter with empty sort descriptors, configures state, presents")
     func unsort() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing3.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderRight)
         sorter.entriesToReturn = [entry1, entry2]
         let dummy = Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)
         subject.state.results = [dummy]
@@ -304,8 +353,8 @@ final class MainProcessorTests {
 
     @Test("receive updateResults: calls sorter, configures state, presents")
     func updateResults() async {
-        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing.com")!, copyTo: URL(string: "http://nothing2.com")!, why: .olderLeft)
-        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing.com")!, why: .olderRight)
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing3.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderRight)
         sorter.entriesToReturn = [entry1, entry2]
         let sortDescriptor = NSSortDescriptor(key: "howdy", ascending: false)
         let dummy = Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)

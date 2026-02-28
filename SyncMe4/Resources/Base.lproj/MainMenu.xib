@@ -388,6 +388,9 @@ CA
                             </menuItem>
                             <menuItem title="Move Target To Trash" alternate="YES" id="tmd-B7-o1E">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="doTrashTarget:" target="-1" id="g5o-1w-Dh0"/>
+                                </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="lqC-2v-epD"/>
                             <menuItem title="Copy All" id="rPF-mD-I7d">

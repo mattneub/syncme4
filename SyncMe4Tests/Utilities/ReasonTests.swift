@@ -13,4 +13,16 @@ struct ReasonTests {
         why = Reason.olderRight
         #expect(why.imageName == "rightarrowred")
     }
+
+    @Test("direction is correct based on reason")
+    func direction() {
+        var why = Reason.absentLeft
+        #expect(why.direction == .rightToLeft)
+        why = Reason.absentRight
+        #expect(why.direction == .leftToRight)
+        why = Reason.olderLeft
+        #expect(why.direction == .rightToLeft)
+        why = Reason.olderRight
+        #expect(why.direction == .leftToRight)
+    }
 }

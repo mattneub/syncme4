@@ -15,16 +15,25 @@ nonisolated struct Entry: Equatable {
 
     var why: Reason // var, because we can change reason later
 
+    // Paths directly from source / destination urls
+
+    var sourcePath: String {
+        copyFrom.path(percentEncoded: false)
+    }
+
+    var destinationPath: String {
+        copyTo.path(percentEncoded: false)
+    }
+
     // Directional (spatial) representations to show the user the pathnames
     // in the left folder and the right folder, respectively.
 
     var leftFolderItemPath: String {
-        let leftToRight = why.imageName.hasPrefix("right")
-        return (leftToRight ? copyFrom : copyTo).path(percentEncoded: false)
+        (why.direction == .leftToRight ? sourcePath : destinationPath)
     }
+
     var rightFolderItemPath: String {
-        let leftToRight = why.imageName.hasPrefix("right")
-        return (leftToRight ? copyTo : copyFrom).path(percentEncoded: false)
+        (why.direction == .leftToRight ? destinationPath : sourcePath)
     }
 
     // Index number so we can restore the original sort order

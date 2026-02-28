@@ -49,7 +49,7 @@ final class MainProcessor: Processor {
                 print(error) // TODO: do something useful with error
             }
         case .removeFromList(let indexes):
-            indexes.map { Int($0) }.sorted { $0 > $1 }.forEach {
+            indexes.map { Int($0) }.sorted(by: >).forEach {
                 state.results.remove(at: $0)
             }
             state.selectedResults = []
@@ -82,6 +82,24 @@ final class MainProcessor: Processor {
             await presenter?.present(state)
         case .tickle:
             services.finderScripter.tickle()
+        case .trash(let indexSet):
+            var indexes = Array(indexSet).map { Int($0) }.sorted(by: <)
+            var entries = state.results // work from a copy now, reconcile when finished
+            do {
+                while !indexes.isEmpty {
+                    let url = entries[indexes[0]].copyFrom
+                    try await Task { @concurrent in
+                        try await services.finderScripter.trash(url)
+                    }.value
+                    entries.remove(at: indexes[0])
+                    await presenter?.receive(.remove(indexes[0]))
+                    indexes.remove(at: 0)
+                    indexes = indexes.map { $0 - 1 }
+                }
+            } catch {}
+            state.results = entries
+            state.selectedResults = []
+            await presenter?.present(state)
         case .unsort:
             state.selectedResults = []
             state.results = services.sorter.sort(state.results, using: [])

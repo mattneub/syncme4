@@ -12,6 +12,7 @@ enum MainAction: Equatable {
     case rightFieldChoose(NSWindow)
     case selectedRows(IndexSet)
     case tickle
+    case trash(IndexSet)
     case unsort
     case updateResults([NSSortDescriptor])
 }

@@ -57,12 +57,12 @@ final class MainDatasource: NSObject, @MainActor TableViewDatasourceType {
 
     func viewProvider(_ tableView: NSTableView, _ tableColumn: NSTableColumn, _ row: Int, _ identifier: UUID) -> NSView {
         let view = tableView.makeView(withIdentifier: tableColumn.identifier, owner: tableView) as? NSTableCellView
-        let result = data[row] // TODO: This is wrong, we will want to use id to match
+        let result = data[row]
         switch tableColumn.identifier.rawValue {
         case "why":
             view?.imageView?.image = NSImage(named: result.why.imageName)
         case "path":
-            view?.textField?.stringValue = result.leftFolderItemPath // TODO: this might be wrong, check original
+            view?.textField?.stringValue = result.sourcePath
         default: break
         }
         return view ?? NSView()

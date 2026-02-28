@@ -121,6 +121,16 @@ struct MainViewControllerTests {
         #expect(subject.cancelButton.isHidden)
     }
 
+    @Test("receive remove: calls table view remove at index, no animation")
+    func remove() async {
+        let tableView = MockTableView()
+        subject.tableView = tableView
+        await subject.receive(.remove(2))
+        #expect(tableView.methodsCalled == ["removeRows(at:withAnimation:)"])
+        #expect(tableView._indexSet == [2])
+        #expect(tableView._animationOptions == [])
+    }
+
     @Test("textFieldChanged: sends left/right field changed depending on sender")
     func textFieldChanged() async {
         subject.loadViewIfNeeded()
@@ -193,7 +203,7 @@ struct MainViewControllerTests {
         #expect(processor.thingsReceived == [.reverseDirection(1)])
     }
 
-    @Test("reveal: sends reveal with table view selected row")
+    @Test("doReveal: sends reveal with table view selected row")
     func reveal() async {
         let tableView = MockTableView()
         tableView._selectedRow = 1
@@ -201,6 +211,26 @@ struct MainViewControllerTests {
         subject.doReveal(self)
         await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.reveal(1)])
+    }
+
+    @Test("doRevealTarget: sends reveal with table view selected row")
+    func revealTarget() async {
+        let tableView = MockTableView()
+        tableView._selectedRow = 1
+        subject.tableView = tableView
+        subject.doRevealTarget(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.revealTarget(1)])
+    }
+
+    @Test("doTrash: sends trash with table view selected row indexes")
+    func revealTrash() async {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = [1, 2, 3]
+        subject.tableView = tableView
+        subject.doTrash(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.trash([1, 2, 3])])
     }
 
     @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
@@ -224,6 +254,8 @@ struct MainViewControllerTests {
         item.action = #selector(subject.doRemoveFromList(_:))
         #expect(subject.validateMenuItem(item) == false)
         tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
         #expect(subject.validateMenuItem(item) == true)
     }
 
@@ -253,5 +285,33 @@ struct MainViewControllerTests {
         #expect(subject.validateMenuItem(item) == true)
         tableView._selectedRowIndexes = [1, 2]
         #expect(subject.validateMenuItem(item) == false)
+    }
+
+    @Test("validateMenuItem: if doRevealTarget: depends on whether table view has one selected row")
+    func validateDoRevealTarget() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doRevealTarget(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
+        #expect(subject.validateMenuItem(item) == false)
+    }
+
+    @Test("validateMenuItem: if doTrash: depends on whether table view has selected rows")
+    func validateDoTrash() {
+        let tableView = MockTableView()
+        tableView._selectedRowIndexes = []
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doTrash(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._selectedRowIndexes = [1]
+        #expect(subject.validateMenuItem(item) == true)
+        tableView._selectedRowIndexes = [1, 2]
+        #expect(subject.validateMenuItem(item) == true)
     }
 }

@@ -146,7 +146,7 @@ final class MainProcessorTests {
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.reveal(1))
         #expect(finderScripter.methodsCalled == ["reveal(_:)"])
-        #expect(finderScripter.url == entry2.copyFrom)
+        #expect(finderScripter.urls[0] == entry2.copyFrom)
     }
 
     @Test("receive revealTarget: calls finderScripter with copyTo of entry at given index")
@@ -157,7 +157,7 @@ final class MainProcessorTests {
         subject.state.results = [entry1, entry2, entry3]
         await subject.receive(.revealTarget(1))
         #expect(finderScripter.methodsCalled == ["reveal(_:)"])
-        #expect(finderScripter.url == entry2.copyTo)
+        #expect(finderScripter.urls[0] == entry2.copyTo)
     }
 
     @Test("reverseDirection: if entry at index has reason .absent..., beeps and stops")
@@ -248,6 +248,39 @@ final class MainProcessorTests {
     func tickle() async {
         await subject.receive(.tickle)
         #expect(finderScripter.methodsCalled == ["tickle()"])
+    }
+
+    @Test("receive trash: calls finder scripter trash and presenter remove for each listed entry, reconciles state and presents")
+    func trash() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing6.com")!, why: .absentRight)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [1, 2]
+        await subject.receive(.trash([0, 2]))
+        #expect(finderScripter.methodsCalled == ["trash(_:)", "trash(_:)"])
+        #expect(finderScripter.urls == [URL(string: "http://www.nothing1.com")!, URL(string: "http://www.nothing3.com")!])
+        #expect(presenter.thingsReceived == [.remove(0), .remove(1)]) // because 2 becomes 1 after 0 is removed
+        #expect(subject.state.results == [entry2])
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
+    }
+
+    @Test("receive trash: if an error is returned, reconciles state and presents")
+    func trashWithError() async {
+        let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "http://www.nothing3.com")!, copyTo: URL(string: "http://nothing6.com")!, why: .absentRight)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [1, 2]
+        finderScripter.errorToThrow = NSError(domain: "domain", code: 0)
+        await subject.receive(.trash([0, 2]))
+        #expect(finderScripter.methodsCalled == ["trash(_:)"])
+        #expect(finderScripter.urls == [URL(string: "http://www.nothing1.com")!])
+        #expect(presenter.thingsReceived.isEmpty)
+        #expect(subject.state.results == [entry1, entry2, entry3])
+        #expect(subject.state.selectedResults == [])
+        #expect(presenter.statesPresented == [subject.state])
     }
 
     @Test("receive unsort: calls sorter with empty sort descriptors, configures state, presents")

@@ -44,7 +44,7 @@ private struct MainDatasourceTests {
         }
         do {
             let view = try #require(tableView.view(atColumn: 0, row: 0, makeIfNecessary: false) as? NSTableCellView)
-            #expect(view.textField?.stringValue == "/c/d") // TODO: is this the right answer?
+            #expect(view.textField?.stringValue == "/a/b") // source
         }
     }
 

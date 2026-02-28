@@ -3,6 +3,24 @@ import Testing
 import AppKit
 
 struct EntryTests {
+    @Test("sourcePath: is correct regardless of reason")
+    func sourcePath() {
+        let url1 = URL(string: "file:///a/b/c")!
+        let url2 = URL(string: "file:///d/e/f")!
+        var subject = Entry(copyFrom: url1, copyTo: url2, why: .absentRight)
+        #expect(subject.sourcePath == "/a/b/c")
+        #expect(subject.destinationPath == "/d/e/f")
+        subject.why = .absentLeft
+        #expect(subject.sourcePath == "/a/b/c")
+        #expect(subject.destinationPath == "/d/e/f")
+        subject.why = .olderRight
+        #expect(subject.sourcePath == "/a/b/c")
+        #expect(subject.destinationPath == "/d/e/f")
+        subject.why = .olderLeft
+        #expect(subject.sourcePath == "/a/b/c")
+        #expect(subject.destinationPath == "/d/e/f")
+    }
+
     @Test("leftFolderItemPath: is correct depending on reason")
     func leftFolderItemPath() {
         let url1 = URL(string: "file:///a/b/c")!

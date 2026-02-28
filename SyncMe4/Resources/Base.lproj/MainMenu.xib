@@ -382,6 +382,9 @@ CA
                             </menuItem>
                             <menuItem title="Move To Trash" id="uAW-3b-1qJ">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doTrash:" target="-1" id="dnt-EE-Bu3"/>
+                                </connections>
                             </menuItem>
                             <menuItem title="Move Target To Trash" alternate="YES" id="tmd-B7-o1E">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES"/>

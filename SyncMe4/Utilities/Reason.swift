@@ -9,11 +9,21 @@ nonisolated enum Reason: Int {
     case olderLeft
     var imageName: String {
         switch self {
-        case .olderRight : return "rightarrowred"
-        case .olderLeft : return "leftarrowred"
-        case .absentRight : return "rightarrowgreen"
-        case .absentLeft : return "leftarrowgreen"
+        case .olderRight: "rightarrowred"
+        case .olderLeft: "leftarrowred"
+        case .absentRight: "rightarrowgreen"
+        case .absentLeft: "leftarrowgreen"
         }
+    }
+    var direction: Direction {
+        switch self {
+        case .absentRight, .olderRight: .leftToRight
+        case .absentLeft, .olderLeft: .rightToLeft
+        }
+    }
+    enum Direction {
+        case leftToRight
+        case rightToLeft
     }
 }
 

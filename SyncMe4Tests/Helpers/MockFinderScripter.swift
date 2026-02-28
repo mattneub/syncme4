@@ -2,8 +2,9 @@
 import Foundation
 
 final class MockFinderScripter: FinderScripterType {
-    var methodsCalled = [String]()
-    var url: URL?
+    nonisolated(unsafe) var methodsCalled = [String]()
+    nonisolated(unsafe) var urls = [URL]()
+    nonisolated(unsafe) var errorToThrow: (any Error)?
 
     func tickle() {
         methodsCalled.append(#function)
@@ -11,6 +12,15 @@ final class MockFinderScripter: FinderScripterType {
 
     func reveal(_ url: URL) {
         methodsCalled.append(#function)
-        self.url = url
+        self.urls.append(url)
     }
+
+    func trash(_ url: URL) throws {
+        methodsCalled.append(#function)
+        self.urls.append(url)
+        if let errorToThrow {
+            throw errorToThrow
+        }
+    }
+
 }

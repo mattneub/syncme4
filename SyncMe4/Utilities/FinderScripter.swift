@@ -2,13 +2,17 @@ import AppKit
 import SwiftAutomation
 import MacOSGlues
 
-protocol FinderScripterType {
+protocol FinderScripterType: Sendable {
     func tickle()
     func reveal(_ url: URL)
+    func trash(_ url: URL) throws
 }
 
 /// Object that knows how to talk to the Finder using Apple events.
+nonisolated
 final class FinderScripter: FinderScripterType {
+    private let NO_TIME_OUT: TimeInterval = TimeInterval(Int16.max-1) // ~9 hrs; passing -2 said to be buggy
+
     func tickle() {
         // just enough to trigger the system dialog, if needed, on launch
         let finder = Finder()
@@ -32,5 +36,10 @@ final class FinderScripter: FinderScripterType {
                 
             }
         }
+    }
+
+    func trash(_ url: URL) throws {
+        let finder = Finder()
+        try finder.delete(url, withTimeout: NO_TIME_OUT)
     }
 }

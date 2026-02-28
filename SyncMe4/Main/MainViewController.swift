@@ -90,6 +90,8 @@ final class MainViewController: NSViewController, ReceiverPresenter {
                 nowProcessing.isHidden = true
                 cancelButton.isHidden = true
             }
+        case .remove(let index):
+            tableView.removeRows(at: [index], withAnimation: []) // also updates selection
         }
     }
 
@@ -158,6 +160,12 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.revealTarget(tableView.selectedRow))
         }
     }
+
+    @IBAction func doTrash(_ sender: Any) {
+        Task {
+            await processor?.receive(.trash(tableView.selectedRowIndexes))
+        }
+    }
 }
 
 extension MainViewController: NSMenuItemValidation {
@@ -168,6 +176,7 @@ extension MainViewController: NSMenuItemValidation {
         case #selector(doReverseDirection): return tableView.selectedRowIndexes.count == 1
         case #selector(doReveal): return tableView.selectedRowIndexes.count == 1
         case #selector(doRevealTarget): return tableView.selectedRowIndexes.count == 1
+        case #selector(doTrash): return tableView.selectedRowIndexes.count > 0
         default: return true
         }
     }

@@ -25,6 +25,53 @@ final class MainProcessorTests {
         subject.progressWatchingTask?.cancel()
     }
 
+    @Test("receive copyAll: clears decks; for each, selects first row, sets current folder, calls copy, cleans state and presents, finally sets current folder nil")
+    func copyAll() async {
+        let entry1 = Entry(copyFrom: URL(string: "file:///a")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "file:///b")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "file:///c")!, copyTo: URL(string: "http://nothing6.com")!, why: .olderRight)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [0, 2]
+        await subject.receive(.copyAll)
+        #expect(presenter.thingsReceived == [
+            .deselectAllAndScrollToTop,
+            .selectFirstRow, .currentFolder("/a"),
+            .selectFirstRow, .currentFolder("/b"),
+            .selectFirstRow, .currentFolder("/c"),
+            .currentFolder(nil)
+        ])
+        #expect(finderScripter.methodsCalled == ["copy(from:to:)", "copy(from:to:)", "copy(from:to:)"])
+        #expect(finderScripter.sources == [URL(string: "file:///a")!, URL(string: "file:///b")!, URL(string: "file:///c")!])
+        #expect(finderScripter.destinations == [URL(string: "http://nothing4.com")!, URL(string: "http://nothing5.com")!, URL(string: "http://nothing6.com")!])
+        #expect(presenter.statesPresented.count == 3)
+        #expect(presenter.statesPresented[0].results == [entry2, entry3])
+        #expect(presenter.statesPresented[1].results == [entry3])
+        #expect(presenter.statesPresented[2].results == [])
+        #expect(presenter.statesPresented[0].selectedResults == [])
+        #expect(presenter.statesPresented[1].selectedResults == [])
+        #expect(presenter.statesPresented[2].selectedResults == [])
+    }
+
+    @Test("receive copyAll: if it gets an error, stops, sets current folder nil")
+    func copyAllError() async {
+        let entry1 = Entry(copyFrom: URL(string: "file:///a")!, copyTo: URL(string: "http://nothing4.com")!, why: .olderLeft)
+        let entry2 = Entry(copyFrom: URL(string: "file:///b")!, copyTo: URL(string: "http://nothing5.com")!, why: .olderRight)
+        let entry3 = Entry(copyFrom: URL(string: "file:///c")!, copyTo: URL(string: "http://nothing6.com")!, why: .olderRight)
+        subject.state.results = [entry1, entry2, entry3]
+        subject.state.selectedResults = [0, 2]
+        finderScripter.errorToThrow = NSError(domain: "hey", code: 0)
+        await subject.receive(.copyAll)
+        #expect(presenter.thingsReceived == [
+            .deselectAllAndScrollToTop,
+            .selectFirstRow, .currentFolder("/a"),
+            .currentFolder(nil)
+        ])
+        #expect(finderScripter.methodsCalled == ["copy(from:to:)"])
+        #expect(finderScripter.sources == [URL(string: "file:///a")!])
+        #expect(finderScripter.destinations == [URL(string: "http://nothing4.com")!])
+        #expect(presenter.statesPresented.count == 0)
+    }
+
     @Test("receive leftFieldChanged: sets state leftFolder")
     func leftFieldChanged() async {
         let url = URL(string: "https://www.example.com")!
@@ -260,13 +307,17 @@ final class MainProcessorTests {
         await subject.receive(.trash([0, 2]))
         #expect(finderScripter.methodsCalled == ["trash(_:)", "trash(_:)"])
         #expect(finderScripter.urls == [URL(string: "http://www.nothing1.com")!, URL(string: "http://www.nothing3.com")!])
-        #expect(presenter.thingsReceived == [.remove(0), .remove(1)]) // because 2 becomes 1 after 0 is removed
+        #expect(presenter.thingsReceived == [.scrollToRow(0), .scrollToRow(1)]) // because with 0 gone, 2 becomes 1
         #expect(subject.state.results == [entry2])
         #expect(subject.state.selectedResults == [])
-        #expect(presenter.statesPresented == [subject.state])
+        #expect(presenter.statesPresented.count == 2)
+        #expect(presenter.statesPresented[0].results == [entry2, entry3])
+        #expect(presenter.statesPresented[0].selectedResults == [1]) // ditto
+        #expect(presenter.statesPresented[1].results == [entry2])
+        #expect(presenter.statesPresented[1].selectedResults == [])
     }
 
-    @Test("receive trash: if an error is returned, reconciles state and presents")
+    @Test("receive trash: if an error is returned, stops")
     func trashWithError() async {
         let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
         let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
@@ -277,13 +328,13 @@ final class MainProcessorTests {
         await subject.receive(.trash([0, 2]))
         #expect(finderScripter.methodsCalled == ["trash(_:)"])
         #expect(finderScripter.urls == [URL(string: "http://www.nothing1.com")!])
-        #expect(presenter.thingsReceived.isEmpty)
+        #expect(presenter.thingsReceived == [.scrollToRow(0)])
         #expect(subject.state.results == [entry1, entry2, entry3])
-        #expect(subject.state.selectedResults == [])
-        #expect(presenter.statesPresented == [subject.state])
+        #expect(subject.state.selectedResults == [1, 2])
+        #expect(presenter.statesPresented.isEmpty)
     }
 
-    @Test("receive trashTarget: calls finder scripter trash with copyTo and presenter remove for each listed entry, reconciles state and presents")
+    @Test("receive trashTarget: calls finder scripter trash with copyTo and presenter scroll, reconciles state and presents, for each listed entry")
     func trashTarget() async {
         let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
         let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
@@ -293,13 +344,17 @@ final class MainProcessorTests {
         await subject.receive(.trashTarget([0, 2]))
         #expect(finderScripter.methodsCalled == ["trash(_:)", "trash(_:)"])
         #expect(finderScripter.urls == [URL(string: "http://www.nothing4.com")!, URL(string: "http://www.nothing6.com")!])
-        #expect(presenter.thingsReceived == [.remove(0), .remove(1)]) // because 2 becomes 1 after 0 is removed
+        #expect(presenter.thingsReceived == [.scrollToRow(0), .scrollToRow(1)]) // because with 0 gone, 2 becomes 1
         #expect(subject.state.results == [entry2])
         #expect(subject.state.selectedResults == [])
-        #expect(presenter.statesPresented == [subject.state])
+        #expect(presenter.statesPresented.count == 2)
+        #expect(presenter.statesPresented[0].results == [entry2, entry3])
+        #expect(presenter.statesPresented[0].selectedResults == [1]) // ditto
+        #expect(presenter.statesPresented[1].results == [entry2])
+        #expect(presenter.statesPresented[1].selectedResults == [])
     }
 
-    @Test("receive trashTarget: if an error is returned, reconciles state and presents")
+    @Test("receive trashTarget: if an error is returned, stops")
     func trashTargetWithError() async {
         let entry1 = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing4.com")!, why: .olderLeft)
         let entry2 = Entry(copyFrom: URL(string: "http://www.nothing2.com")!, copyTo: URL(string: "http://www.nothing5.com")!, why: .olderRight)
@@ -310,10 +365,10 @@ final class MainProcessorTests {
         await subject.receive(.trashTarget([0, 2]))
         #expect(finderScripter.methodsCalled == ["trash(_:)"])
         #expect(finderScripter.urls == [URL(string: "http://www.nothing4.com")!])
-        #expect(presenter.thingsReceived.isEmpty)
+        #expect(presenter.thingsReceived == [.scrollToRow(0)])
         #expect(subject.state.results == [entry1, entry2, entry3])
-        #expect(subject.state.selectedResults == [])
-        #expect(presenter.statesPresented == [subject.state])
+        #expect(subject.state.selectedResults == [1, 2])
+        #expect(presenter.statesPresented.count == 0)
     }
 
     @Test("receive trashTarget: if any chosen entry has no existing destination, beeps and stops")

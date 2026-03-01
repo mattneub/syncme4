@@ -41,7 +41,6 @@ final class MainViewController: NSViewController, ReceiverPresenter {
 
     @IBOutlet var arrow: NSImageView!
 
-
     lazy var datasource: (any TableViewDatasourceType<Void, MainState>) = MainDatasource(
         tableView: tableView,
         processor: processor
@@ -90,8 +89,13 @@ final class MainViewController: NSViewController, ReceiverPresenter {
                 nowProcessing.isHidden = true
                 cancelButton.isHidden = true
             }
-        case .remove(let index):
-            tableView.removeRows(at: [index], withAnimation: []) // also updates selection
+        case .deselectAllAndScrollToTop:
+            tableView.deselectAll(self)
+            tableView.scrollRowToVisible(0)
+        case .scrollToRow(let row):
+            (tableView as? MyScrollableTableView)?.scrollToRow(row)
+        case .selectFirstRow:
+            tableView.selectRowIndexes([0], byExtendingSelection: false)
         }
     }
 
@@ -172,6 +176,12 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             await processor?.receive(.trashTarget(tableView.selectedRowIndexes))
         }
     }
+
+    @IBAction func doCopyAll(_ sender: Any) {
+        Task {
+            await processor?.receive(.copyAll)
+        }
+    }
 }
 
 extension MainViewController: NSMenuItemValidation {
@@ -184,6 +194,7 @@ extension MainViewController: NSMenuItemValidation {
         case #selector(doRevealTarget): return tableView.selectedRowIndexes.count == 1
         case #selector(doTrash): return tableView.selectedRowIndexes.count > 0
         case #selector(doTrashTarget): return tableView.selectedRowIndexes.count > 0
+        case #selector(doCopyAll): return tableView.numberOfRows > 0
         default: return true
         }
     }

@@ -12,6 +12,11 @@ final class MainProcessor: Processor {
 
     func receive(_ action: MainAction) async {
         switch action {
+        case .copyAll:
+            // clear the decks
+            // TODO: other clear the decks stuff, e.g. disable Preflight and Choose buttons etc.
+            await presenter?.receive(.deselectAllAndScrollToTop)
+            await copyAll()
         case .leftFieldChanged(let url):
             state.leftFolder = url
         case .leftFieldChoose(let window):
@@ -128,23 +133,41 @@ final class MainProcessor: Processor {
     /// Implementation of receive `.trash` and `.trashTarget`.
     func trash(_ indexSet: IndexSet, target: Bool) async {
         var indexes = indexSet.sorted(by: <)
-        var entries = state.results // work from a copy now, reconcile when finished
         do {
             while !indexes.isEmpty {
+                await presenter?.receive(.scrollToRow(indexes[0]))
                 let keyPath: KeyPath<Entry, URL> = target ? \.copyTo : \.copyFrom
-                let url = entries[indexes[0]][keyPath: keyPath]
+                let url = state.results[indexes[0]][keyPath: keyPath]
                 try await Task { @concurrent in
                     try await services.finderScripter.trash(url)
+                    // try await Task.sleep(for: .seconds(1))
                 }.value
-                entries.remove(at: indexes[0])
-                await presenter?.receive(.remove(indexes[0]))
+                state.results.remove(at: indexes[0])
                 indexes.remove(at: 0)
                 indexes = indexes.map { $0 - 1 }
+                state.selectedResults = IndexSet(indexes)
+                await presenter?.present(state)
             }
         } catch {}
-        state.results = entries
-        state.selectedResults = []
-        await presenter?.present(state)
     }
 
+    /// Implementation of `.copyAll`.
+    func copyAll() async {
+        do {
+            while !state.results.isEmpty {
+                await presenter?.receive(.selectFirstRow)
+                let entry = state.results[0]
+                let currentFolder = entry.sourcePath
+                await presenter?.receive(.currentFolder(currentFolder))
+                try await Task { @concurrent in
+                    try await services.finderScripter.copy(from: entry.copyFrom, to: entry.copyTo)
+                    // try await Task.sleep(for: .seconds(1))
+                }.value
+                state.results.remove(at: 0)
+                state.selectedResults = []
+                await presenter?.present(state)
+            }
+        } catch {}
+        await presenter?.receive(.currentFolder(nil))
+    }
 }

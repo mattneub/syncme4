@@ -1,4 +1,6 @@
 enum MainEffect: Equatable {
     case currentFolder(String?)
-    case remove(Int)
+    case deselectAllAndScrollToTop
+    case scrollToRow(Int)
+    case selectFirstRow
 }

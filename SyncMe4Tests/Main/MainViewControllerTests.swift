@@ -121,14 +121,68 @@ struct MainViewControllerTests {
         #expect(subject.cancelButton.isHidden)
     }
 
-    @Test("receive remove: calls table view remove at index, no animation")
-    func remove() async {
+    @Test("receive deselectAll: calls deselect all and scroll row 0 to visible")
+    func deselectAll() async {
         let tableView = MockTableView()
         subject.tableView = tableView
-        await subject.receive(.remove(2))
-        #expect(tableView.methodsCalled == ["removeRows(at:withAnimation:)"])
-        #expect(tableView._indexSet == [2])
-        #expect(tableView._animationOptions == [])
+        await subject.receive(.deselectAllAndScrollToTop)
+        #expect(tableView.methodsCalled == ["deselectAll(_:)", "scrollRowToVisible(_:)"])
+        #expect(tableView._rowsScrolledTo == [0])
+    }
+
+    @Test("receive scrollToRow: scrolls to bring the given row to top")
+    func scrollToRow() async {
+        let subject = MainViewController()
+        makeWindow(viewController: subject)
+        var entries = [Entry]()
+        for index in 0...40 {
+            entries.append(Entry(copyFrom: URL(string: "file:///\(index)")!, copyTo: URL(string: "file:///b")!, why: .olderLeft))
+        }
+        await subject.present(MainState(results: entries))
+        #expect(subject.tableView.visibleRect.origin.y == -28) // height of the header; we are scrolled to the top
+        await subject.receive(.scrollToRow(14))
+        #expect(subject.tableView.visibleRect.origin.y == 210) // row height 17, 17*14-28 = 210
+        closeWindows()
+    }
+
+    @Test("receive scrollToRow: if the target row is close to the bottom, scrolls all bottom rows onto the screen")
+    func scrollToRowBottom() async {
+        let subject = MainViewController()
+        makeWindow(viewController: subject)
+        var entries = [Entry]()
+        for index in 0...40 {
+            entries.append(Entry(copyFrom: URL(string: "file:///\(index)")!, copyTo: URL(string: "file:///b")!, why: .olderLeft))
+        }
+        await subject.present(MainState(results: entries))
+        #expect(subject.tableView.visibleRect.origin.y == -28) // height of the header; we are scrolled to the top
+        await subject.receive(.scrollToRow(38))
+        let range = subject.tableView.rows(in: subject.tableView.visibleRect)
+        #expect(range.location + range.length - 1 == 40) // the bottom row is onscreen
+        closeWindows()
+    }
+
+    @Test("receive scrollToRow: if all rows are onscreen, does nothing")
+    func scrollToRowAllRowsVisible() async {
+        let subject = MainViewController()
+        makeWindow(viewController: subject)
+        var entries = [Entry]()
+        for index in 0...3 {
+            entries.append(Entry(copyFrom: URL(string: "file:///\(index)")!, copyTo: URL(string: "file:///b")!, why: .olderLeft))
+        }
+        await subject.present(MainState(results: entries))
+        #expect(subject.tableView.visibleRect.origin.y == -28) // height of the header; we are scrolled to the top
+        await subject.receive(.scrollToRow(2))
+        #expect(subject.tableView.visibleRect.origin.y == -28) // nothing happened
+        closeWindows()
+    }
+
+    @Test("receive selectFirstRow: calls select row indexes with 0")
+    func selectFirstRow() async {
+        let tableView = MockTableView()
+        subject.tableView = tableView
+        await subject.receive(.selectFirstRow)
+        #expect(tableView.methodsCalled == ["selectRowIndexes(_:byExtendingSelection:)"])
+        #expect(tableView._selectedRowIndexes == [0])
     }
 
     @Test("textFieldChanged: sends left/right field changed depending on sender")

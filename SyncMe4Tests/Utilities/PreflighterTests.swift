@@ -146,6 +146,7 @@ struct PreflighterTests: ~Copyable {
 
     @Test("compareFolders: dives into same-named folders, sets currentFolder as it goes")
     func dive() async {
+        // I have no idea why this test fails the first time but then succeeds, it's weird
         let subject = Preflighter()
         subject.currentFolder = ""
         try? await Task.sleep(for: .seconds(0.1))

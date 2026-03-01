@@ -6,8 +6,7 @@ final class MockTableView: NSTableView {
     var _selectedRowIndexes = IndexSet([1, 2])
     var _sortDescriptors: [NSSortDescriptor] = []
     var _numberOfRows: Int = 0
-    var _indexSet: IndexSet?
-    var _animationOptions: NSTableView.AnimationOptions?
+    var _rowsScrolledTo = [Int]()
     override var numberOfRows: Int { _numberOfRows }
     override var selectedRow: Int { _selectedRow }
     override var selectedRowIndexes: IndexSet { _selectedRowIndexes }
@@ -15,9 +14,15 @@ final class MockTableView: NSTableView {
         get { _sortDescriptors }
         set {}
     }
-    override func removeRows(at indexSet: IndexSet, withAnimation animationOptions: NSTableView.AnimationOptions) {
+    override func selectRowIndexes(_ indexes: IndexSet, byExtendingSelection: Bool) {
         methodsCalled.append(#function)
-        self._indexSet = indexSet
-        self._animationOptions = animationOptions
+        _selectedRowIndexes = indexes
+    }
+    override func deselectAll(_ sender: Any?) {
+        methodsCalled.append(#function)
+    }
+    override func scrollRowToVisible(_ row: Int) {
+        methodsCalled.append(#function)
+        _rowsScrolledTo.append(row)
     }
 }

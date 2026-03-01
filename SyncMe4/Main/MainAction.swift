@@ -1,6 +1,7 @@
 import AppKit
 
 enum MainAction: Equatable {
+    case copyAll
     case leftFieldChanged(URL?)
     case leftFieldChoose(NSWindow)
     case preflight

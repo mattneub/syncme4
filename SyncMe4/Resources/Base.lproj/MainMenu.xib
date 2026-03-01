@@ -395,6 +395,9 @@ CA
                             <menuItem isSeparatorItem="YES" id="lqC-2v-epD"/>
                             <menuItem title="Copy All" id="rPF-mD-I7d">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doCopyAll:" target="-1" id="Ue5-Dp-8AH"/>
+                                </connections>
                             </menuItem>
                         </items>
                     </menu>

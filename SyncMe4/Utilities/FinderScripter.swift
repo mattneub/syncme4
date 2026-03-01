@@ -6,6 +6,7 @@ protocol FinderScripterType: Sendable {
     func tickle()
     func reveal(_ url: URL)
     func trash(_ url: URL) throws
+    func copy(from source: URL, to destination: URL) throws
 }
 
 /// Object that knows how to talk to the Finder using Apple events.
@@ -41,5 +42,12 @@ final class FinderScripter: FinderScripterType {
     func trash(_ url: URL) throws {
         let finder = Finder()
         try finder.delete(url, withTimeout: NO_TIME_OUT)
+    }
+
+    func copy(from source: URL, to destination: URL) throws {
+        try? trash(destination) // if it fails it fails (might not even exist)
+        let destinationContainer = destination.deletingLastPathComponent()
+        let finder = Finder()
+        try finder.duplicate(source, to: destinationContainer, replacing: true, withTimeout: NO_TIME_OUT)
     }
 }

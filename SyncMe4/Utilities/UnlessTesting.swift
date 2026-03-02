@@ -29,3 +29,18 @@ func unlessTesting(_ handler: () async throws -> Void) async throws {
     }
     try await handler()
 }
+
+func ifTesting(_ handler: () -> Void) {
+    if NSClassFromString("XCTest") == nil {
+        return
+    }
+    handler()
+}
+
+func ifTesting(_ handler: () async throws -> Void) async throws {
+    if NSClassFromString("XCTest") == nil {
+        return
+    }
+    try await handler()
+}
+

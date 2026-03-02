@@ -34,7 +34,7 @@ final class FinderScripter: FinderScripterType {
                 try finder.open(url.deletingLastPathComponent())
                 try finder.activate()
             } catch {
-                
+                // ignore
             }
         }
     }

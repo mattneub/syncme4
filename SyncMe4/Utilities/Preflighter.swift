@@ -68,6 +68,10 @@ final class Preflighter: PreflighterType {
         }
         let contents = try FileManager.default.contentsOfDirectory(at: folder1, includingPropertiesForKeys: Array(keys))
         for item in contents {
+            try? await ifTesting {
+                try? await Task.sleep(for: .seconds(0.2))
+            }
+            try Task.checkCancellation()
             let itemVals = try item.resourceValues(forKeys: Set(keys))
             if let isAlias = itemVals.isAliasFile, isAlias { continue }
             if let isLink = itemVals.isSymbolicLink, isLink { continue }

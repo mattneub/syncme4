@@ -181,4 +181,39 @@ struct PreflighterTests: ~Copyable {
         #expect(currentFolders == expected)
         task.cancel()
     }
+
+    @Test("compareFolders: is cancellable")
+    func diveCancel() async {
+        let subject = Preflighter()
+        subject.currentFolder = ""
+        try? await Task.sleep(for: .seconds(0.1))
+        var currentFolders = [String?]()
+        let task = Task {
+            let observations = Observations { subject.currentFolder }
+            for await currentFolder in observations {
+                currentFolders.append(currentFolder)
+            }
+        }
+        try? await Task.sleep(for: .seconds(0.1))
+        let url1 = url1.appending(component: "same", directoryHint: .isDirectory)
+        let url2 = url2.appending(component: "same", directoryHint: .isDirectory)
+        try! FileManager.default.createDirectory(at: url1, withIntermediateDirectories: true)
+        try! FileManager.default.createDirectory(at: url2, withIntermediateDirectories: true)
+        let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
+        try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
+        let selfurl1 = self.url1
+        let selfurl2 = self.url2
+        let task2 = Task {
+            _ = try? await subject.compareFolders(folder1: selfurl1, folder2: selfurl2)
+        }
+        task2.cancel()
+        try? await Task.sleep(for: .seconds(0.2))
+        try? await Task.sleep(for: .seconds(1))
+        let expectedFolders = [
+            self.url1, // and that's as far as we get
+        ].map { $0.path(percentEncoded: false) }
+        let expected: [String?] = [""] + expectedFolders
+        #expect(currentFolders == expected)
+        task.cancel()
+    }
 }

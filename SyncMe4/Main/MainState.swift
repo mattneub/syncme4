@@ -23,4 +23,7 @@ struct MainState: Equatable {
 
     /// When true, the table view's sort descriptors should be emptied.
     var unsorted = true
+
+    /// When true, everything in the interface except the cancel button should be non-interactive.
+    var disabled = false
 }

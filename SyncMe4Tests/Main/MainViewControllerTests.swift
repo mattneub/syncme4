@@ -94,6 +94,28 @@ struct MainViewControllerTests {
         #expect(subject.tableView.sortDescriptors == [])
     }
 
+    @Test("present: if disabled is true, disables")
+    func presentDisabled() async {
+        subject.loadViewIfNeeded()
+        var state = MainState()
+        state.disabled = true
+        await subject.present(state)
+        #expect(subject.leftField.isEnabled == false)
+        #expect(subject.chooseLeftButton.isEnabled == false)
+        #expect(subject.rightField.isEnabled == false)
+        #expect(subject.chooseRightButton.isEnabled == false)
+        #expect(subject.preflightButton.isEnabled == false)
+        #expect(subject.tableView.isEnabled == false)
+        state.disabled = false
+        await subject.present(state)
+        #expect(subject.leftField.isEnabled == true)
+        #expect(subject.chooseLeftButton.isEnabled == true)
+        #expect(subject.rightField.isEnabled == true)
+        #expect(subject.chooseRightButton.isEnabled == true)
+        #expect(subject.preflightButton.isEnabled == true)
+        #expect(subject.tableView.isEnabled == true)
+    }
+
     @Test("present: presents to datasource")
     func presentDatasource() async {
         subject.loadViewIfNeeded()
@@ -223,11 +245,13 @@ struct MainViewControllerTests {
         closeWindows()
     }
 
-    @Test("preflight: sends preflight")
+    @Test("preflight: sends preflight, sets cancellable task")
     func preflight() async {
+        #expect(subject.cancellableTask == nil)
         subject.preflight(self)
         await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.preflight])
+        #expect(subject.cancellableTask != nil)
     }
 
     @Test("doUnsort: sends unsort")
@@ -295,6 +319,24 @@ struct MainViewControllerTests {
         subject.doTrashTarget(self)
         await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.trashTarget([1, 2, 3])])
+    }
+
+    @Test("doCopyAll: sends copyAll, sets cancellable task")
+    func doCopyAll() async {
+        #expect(subject.cancellableTask == nil)
+        subject.doCopyAll(self)
+        await #while(processor.thingsReceived.isEmpty)
+        #expect(processor.thingsReceived == [.copyAll])
+        #expect(subject.cancellableTask != nil)
+    }
+
+    @Test("doCancel: cancels cancellableTask")
+    func doCancel() async {
+        subject.cancellableTask = Task {
+            try? await Task.sleep(for: .seconds(0.1))
+        }
+        subject.doCancel(self)
+        #expect(subject.cancellableTask!.isCancelled)
     }
 
     @Test("validateMenuItem: if doUnsort: depends on whether table view has rows")
@@ -392,4 +434,17 @@ struct MainViewControllerTests {
         tableView._selectedRowIndexes = [1, 2]
         #expect(subject.validateMenuItem(item) == true)
     }
+
+    @Test("validateMenuItem: if doCopyAll: depends on whether table view has rows")
+    func validateDoCopyAll() {
+        let tableView = MockTableView()
+        tableView._numberOfRows = 0
+        subject.tableView = tableView
+        let item = NSMenuItem()
+        item.action = #selector(subject.doCopyAll(_:))
+        #expect(subject.validateMenuItem(item) == false)
+        tableView._numberOfRows = 1
+        #expect(subject.validateMenuItem(item) == true)
+    }
+
 }

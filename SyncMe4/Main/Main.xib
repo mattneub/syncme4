@@ -10,10 +10,13 @@
             <connections>
                 <outlet property="arrow" destination="PLh-xp-xXV" id="Li8-M9-gDX"/>
                 <outlet property="cancelButton" destination="c6b-pQ-lPF" id="1zP-2u-jwK"/>
+                <outlet property="chooseLeftButton" destination="xc6-r8-rUl" id="iqI-9t-jXX"/>
+                <outlet property="chooseRightButton" destination="5Pc-zB-Gjl" id="lEU-iw-mE3"/>
                 <outlet property="currentFolder" destination="iN5-gY-9sH" id="9sz-sw-Bf8"/>
                 <outlet property="leftField" destination="bfJ-Kp-M16" id="gDW-0V-Oy3"/>
                 <outlet property="leftSelected" destination="9g6-sk-hfH" id="pUB-nm-UGK"/>
                 <outlet property="nowProcessing" destination="16l-FV-gOT" id="cFk-AI-rKE"/>
+                <outlet property="preflightButton" destination="TWo-QW-eps" id="s1K-rC-glo"/>
                 <outlet property="rightField" destination="mKY-Gb-ftO" id="TYG-pK-rOp"/>
                 <outlet property="rightSelected" destination="GK1-Qg-GyX" id="noG-Ze-iYB"/>
                 <outlet property="tableView" destination="UW6-Cj-Qkq" id="U9W-Ph-IuY"/>
@@ -273,6 +276,9 @@
                         <constraint firstAttribute="width" constant="14" id="54z-iY-QqW"/>
                         <constraint firstAttribute="height" constant="9" id="maP-9z-Ne1"/>
                     </constraints>
+                    <connections>
+                        <action selector="doCancel:" target="-2" id="NEH-TB-fLQ"/>
+                    </connections>
                 </button>
             </subviews>
             <constraints>

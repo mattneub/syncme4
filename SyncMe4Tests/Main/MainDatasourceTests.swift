@@ -81,6 +81,9 @@ private final class MyViewController: NSViewController {
     @IBOutlet var leftSelected: NSTextField!
     @IBOutlet var rightSelected: NSTextField!
     @IBOutlet var cancelButton: NSButton!
+    @IBOutlet var preflightButton: NSButton!
+    @IBOutlet var chooseLeftButton: NSButton!
+    @IBOutlet var chooseRightButton: NSButton!
     @IBOutlet var currentFolder: NSTextField!
     @IBOutlet var nowProcessing: NSTextField!
     @IBOutlet var arrow: NSImageView!
@@ -88,4 +91,5 @@ private final class MyViewController: NSViewController {
     @IBAction func leftFieldChoose(_ sender: Any) {}
     @IBAction func rightFieldChoose(_ sender: Any) {}
     @IBAction func preflight(_ sender: Any) {}
+    @IBAction func doCancel(_ sender: Any) {}
 }

@@ -13,9 +13,6 @@ final class MainProcessor: Processor {
     func receive(_ action: MainAction) async {
         switch action {
         case .copyAll:
-            // clear the decks
-            // TODO: other clear the decks stuff, e.g. disable Preflight and Choose buttons etc.
-            await presenter?.receive(.deselectAllAndScrollToTop)
             await copyAll()
         case .leftFieldChanged(let url):
             state.leftFolder = url
@@ -29,30 +26,7 @@ final class MainProcessor: Processor {
                 services.beeper.beep()
                 return
             }
-            do {
-                // clear the decks
-                // TODO: there may be other things we need to do here, such as disable everything
-                // (like the Preflight button, choose buttons, etc.)
-                // so far, however, the comparison is so fast that it doesn't even matter
-                state.selectedResults = []
-                state.results = []
-                await presenter?.present(state)
-                // start watching as the results pour in
-                observePreflighter()
-                var results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
-                // annotate and display the results
-                results = results.enumerated().map { index, result in
-                    var result = result
-                    result.originalOrder = index
-                    return result
-                }
-                state.results = results
-                state.unsorted = true
-                await presenter?.present(state)
-            } catch {
-                progressWatchingTask?.cancel()
-                print(error) // TODO: do something useful with error
-            }
+            await preflight(url1, url2)
         case .removeFromList(let indexes):
             indexes.sorted(by: >).forEach {
                 state.results.remove(at: $0)
@@ -130,8 +104,39 @@ final class MainProcessor: Processor {
         }
     }
 
+    /// Implementation of `.preflight`.
+    func preflight(_ url1: URL, _ url2: URL) async {
+        do {
+            // clear the decks
+            state.selectedResults = []
+            state.results = []
+            state.disabled = true
+            await presenter?.present(state)
+            // start watching as the results pour in
+            observePreflighter()
+            var results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+            // annotate and display the results
+            results = results.enumerated().map { index, result in
+                var result = result
+                result.originalOrder = index
+                return result
+            }
+            state.results = results
+            state.unsorted = true
+            state.disabled = false
+            await presenter?.present(state)
+        } catch {
+            progressWatchingTask?.cancel()
+            state.disabled = false
+            await presenter?.present(state)
+            print(error) // TODO: do something useful with error
+        }
+    }
+
     /// Implementation of receive `.trash` and `.trashTarget`.
     func trash(_ indexSet: IndexSet, target: Bool) async {
+        state.disabled = true
+        await presenter?.present(state)
         var indexes = indexSet.sorted(by: <)
         do {
             while !indexes.isEmpty {
@@ -148,13 +153,24 @@ final class MainProcessor: Processor {
                 state.selectedResults = IndexSet(indexes)
                 await presenter?.present(state)
             }
-        } catch {}
+        } catch {
+            print(error) // TODO: do something useful with error
+        }
+        state.disabled = false
+        await presenter?.present(state)
     }
 
     /// Implementation of `.copyAll`.
     func copyAll() async {
+        state.disabled = true
+        await presenter?.present(state)
+        await presenter?.receive(.deselectAllAndScrollToTop)
         do {
             while !state.results.isEmpty {
+                try? await ifTesting {
+                    try? await Task.sleep(for: .seconds(0.2))
+                }
+                try Task.checkCancellation()
                 await presenter?.receive(.selectFirstRow)
                 let entry = state.results[0]
                 let currentFolder = entry.sourcePath
@@ -167,7 +183,11 @@ final class MainProcessor: Processor {
                 state.selectedResults = []
                 await presenter?.present(state)
             }
-        } catch {}
+        } catch {
+            print(error) // TODO: do something useful with error
+        }
         await presenter?.receive(.currentFolder(nil))
+        state.disabled = false
+        await presenter?.present(state)
     }
 }

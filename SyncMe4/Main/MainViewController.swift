@@ -3,9 +3,16 @@ import AppKit
 final class MainViewController: NSViewController, ReceiverPresenter {
     weak var processor: (any Receiver<MainAction>)?
 
+    /// Sends a cancel signal into selected tasks that are started here.
+    var cancellableTask: Task<Void, Never>?
+
     @IBOutlet var leftField: NSTextField!
 
+    @IBOutlet var chooseLeftButton: NSButton!
+
     @IBOutlet var rightField: NSTextField!
+
+    @IBOutlet var chooseRightButton: NSButton!
 
     @IBOutlet var nowProcessing: NSTextField! {
         didSet {
@@ -24,6 +31,8 @@ final class MainViewController: NSViewController, ReceiverPresenter {
             cancelButton?.isHidden = true
         }
     }
+
+    @IBOutlet var preflightButton: NSButton!
 
     @IBOutlet weak var tableView: NSTableView!
 
@@ -68,6 +77,21 @@ final class MainViewController: NSViewController, ReceiverPresenter {
         arrow.image = if let arrow = state.arrow { NSImage(named: arrow) } else { nil }
         if state.unsorted {
             tableView.sortDescriptors = []
+        }
+        if state.disabled {
+            leftField.isEnabled = false
+            chooseLeftButton.isEnabled = false
+            rightField.isEnabled = false
+            chooseRightButton.isEnabled = false
+            preflightButton.isEnabled = false
+            tableView.isEnabled = false
+        } else {
+            leftField.isEnabled = true
+            chooseLeftButton.isEnabled = true
+            rightField.isEnabled = true
+            chooseRightButton.isEnabled = true
+            preflightButton.isEnabled = true
+            tableView.isEnabled = true
         }
         await datasource.present(state)
         // order matters
@@ -130,7 +154,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     }
 
     @IBAction func preflight(_ sender: Any) {
-        Task {
+        cancellableTask = Task {
             await processor?.receive(.preflight)
         }
     }
@@ -178,9 +202,13 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     }
 
     @IBAction func doCopyAll(_ sender: Any) {
-        Task {
+        cancellableTask = Task {
             await processor?.receive(.copyAll)
         }
+    }
+
+    @IBAction func doCancel(_ sender: Any) {
+        cancellableTask?.cancel()
     }
 }
 

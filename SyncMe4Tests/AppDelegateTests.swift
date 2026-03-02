@@ -7,8 +7,10 @@ private struct AppDelegateTests: ~Copyable {
         closeWindows()
     }
 
-    @Test("bootstrap: creates and configures the main window; calls root coordinator createMainModule")
+    @Test("bootstrap: creates and configures the main window; calls root coordinator createMainModule, registers defaults")
     func bootstrap() throws {
+        let persistence = MockPersistence()
+        services.persistence = persistence
         let coordinator = MockRootCoordinator()
         let subject = AppDelegate()
         subject.rootCoordinator = coordinator
@@ -24,6 +26,7 @@ private struct AppDelegateTests: ~Copyable {
         // #expect(NSApplication.shared.mainMenu != nil)
         #expect(coordinator.methodsCalled == ["createMainModule(window:)"])
         #expect(coordinator.window === window)
+        #expect(persistence.methodsCalled == ["registerDefaults()"])
     }
 }
 

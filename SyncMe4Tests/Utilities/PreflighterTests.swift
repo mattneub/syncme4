@@ -31,7 +31,7 @@ struct PreflighterTests: ~Copyable {
         let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         let copyTo = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
@@ -44,7 +44,7 @@ struct PreflighterTests: ~Copyable {
         let copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
         let copyTo = url2.appending(component: "test", directoryHint: .isDirectory)
         try! FileManager.default.createDirectory(at: copyFrom, withIntermediateDirectories: true)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
@@ -57,11 +57,20 @@ struct PreflighterTests: ~Copyable {
         let copyFrom = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         let copyTo = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
         #expect(result[0].why == .absentLeft)
+    }
+
+    @Test("compareFolders: correctly omits entries that are in stop list")
+    func absentLeftStopList() async {
+        let subject = Preflighter()
+        let copyFrom = url2.appending(component: "test.txt", directoryHint: .notDirectory)
+        try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: ["test.txt", "ho"])
+        #expect(result.count == 0)
     }
 
     @Test("compareFolders: correct for older right")
@@ -74,7 +83,7 @@ struct PreflighterTests: ~Copyable {
         var values: URLResourceValues = .init()
         values.contentModificationDate = Date().addingTimeInterval(-100)
         try! copyTo.setResourceValues(values)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
@@ -91,7 +100,7 @@ struct PreflighterTests: ~Copyable {
         var values: URLResourceValues = .init()
         values.contentModificationDate = Date().addingTimeInterval(-100)
         try! copyTo.setResourceValues(values)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
@@ -110,7 +119,7 @@ struct PreflighterTests: ~Copyable {
         values.contentModificationDate = date
         try! copyTo.setResourceValues(values)
         try! copyFrom.setResourceValues(values)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 0)
     }
 
@@ -125,7 +134,7 @@ struct PreflighterTests: ~Copyable {
         var values: URLResourceValues = .init()
         values.contentModificationDate = date
         try! copyFrom.setResourceValues(values)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 0)
     }
 
@@ -140,7 +149,7 @@ struct PreflighterTests: ~Copyable {
         var values: URLResourceValues = .init()
         values.contentModificationDate = date
         try! copyFrom.setResourceValues(values)
-        let result = try! await subject.compareFolders(folder1: url1, folder2: url2)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: [])
         #expect(result.count == 0)
     }
 
@@ -165,7 +174,7 @@ struct PreflighterTests: ~Copyable {
         let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
         let copyTo = url2.appending(component: "test.txt", directoryHint: .notDirectory)
         try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
-        let result = try! await subject.compareFolders(folder1: self.url1, folder2: self.url2)
+        let result = try! await subject.compareFolders(folder1: self.url1, folder2: self.url2, stopList: [])
         #expect(result.count == 1)
         #expect(result[0].copyFrom == copyFrom)
         #expect(result[0].copyTo == copyTo)
@@ -181,6 +190,22 @@ struct PreflighterTests: ~Copyable {
         #expect(currentFolders == expected)
         task.cancel()
     }
+
+    @Test("compareFolders: correctly omits entries from stop list when diving")
+    func diveStopList() async {
+        // I have no idea why this test fails the first time but then succeeds, it's weird
+        let subject = Preflighter()
+        subject.currentFolder = ""
+        let url1 = url1.appending(component: "same", directoryHint: .isDirectory)
+        let url2 = url2.appending(component: "same", directoryHint: .isDirectory)
+        try! FileManager.default.createDirectory(at: url1, withIntermediateDirectories: true)
+        try! FileManager.default.createDirectory(at: url2, withIntermediateDirectories: true)
+        let copyFrom = url1.appending(component: "test.txt", directoryHint: .notDirectory)
+        try! "howdy".write(to: copyFrom, atomically: true, encoding: .utf8)
+        let result = try! await subject.compareFolders(folder1: self.url1, folder2: self.url2, stopList: ["test.txt", "howdy"])
+        #expect(result.count == 0)
+    }
+
 
     @Test("compareFolders: is cancellable")
     func diveCancel() async {
@@ -204,7 +229,7 @@ struct PreflighterTests: ~Copyable {
         let selfurl1 = self.url1
         let selfurl2 = self.url2
         let task2 = Task {
-            _ = try? await subject.compareFolders(folder1: selfurl1, folder2: selfurl2)
+            _ = try? await subject.compareFolders(folder1: selfurl1, folder2: selfurl2, stopList: [])
         }
         task2.cancel()
         try? await Task.sleep(for: .seconds(0.2))

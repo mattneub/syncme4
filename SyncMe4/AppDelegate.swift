@@ -36,6 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.minSize = CGSize(width: 682, height: 450 + 32)
         window.maxSize = CGSize(width: 10000, height: 10000)
         window.makeKeyAndOrderFront(nil)
+        services.persistence.registerDefaults()
         // window.setFrameAutosaveName("SyncMe4_Main_Window")
         // hook Option menu to our "manual binding" system
         // NSApplication.shared.mainMenu?.item(withTitle: "Option")?.submenu?.delegate = self

@@ -7,6 +7,7 @@ final class MockPreflighter: PreflighterType {
     @ObservationIgnored var methodsCalled = [String]()
     @ObservationIgnored var folder1: URL?
     @ObservationIgnored var folder2: URL?
+    @ObservationIgnored var stopList: [String]?
     @ObservationIgnored var entries = [Entry]()
     @ObservationIgnored var folders = [String]()
 
@@ -14,10 +15,11 @@ final class MockPreflighter: PreflighterType {
         methodsCalled.append(#function)
     }
 
-    func compareFolders(folder1: URL, folder2: URL) async throws -> [Entry] {
+    func compareFolders(folder1: URL, folder2: URL, stopList: [String]) async throws -> [Entry] {
         methodsCalled.append(#function)
         self.folder1 = folder1
         self.folder2 = folder2
+        self.stopList = stopList
         while !folders.isEmpty {
             currentFolder = folders.popLast()
             try? await Task.sleep(for: .seconds(0.1))

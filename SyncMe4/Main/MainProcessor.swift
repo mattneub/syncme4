@@ -114,7 +114,12 @@ final class MainProcessor: Processor {
             await presenter?.present(state)
             // start watching as the results pour in
             observePreflighter()
-            var results = try await services.preflighter.compareFolders(folder1: url1, folder2: url2)
+            let stopList = services.persistence.loadStopList()
+            var results = try await services.preflighter.compareFolders(
+                folder1: url1,
+                folder2: url2,
+                stopList: stopList
+            )
             // annotate and display the results
             results = results.enumerated().map { index, result in
                 var result = result

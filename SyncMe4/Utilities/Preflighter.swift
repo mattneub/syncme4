@@ -3,7 +3,7 @@ import AppKit
 protocol PreflighterType {
     var currentFolder: String? { get }
     func prepare()
-    func compareFolders(folder1: URL, folder2: URL) async throws -> [Entry]
+    func compareFolders(folder1: URL, folder2: URL, stopList: [String]) async throws -> [Entry]
 }
 
 @Observable
@@ -31,9 +31,8 @@ final class Preflighter: PreflighterType {
     /// - Returns: List of Entry objects, each describing a needed copy operation if the folders
     /// are to be made identical.
     @concurrent
-    func compareFolders(folder1: URL, folder2: URL) async throws -> [Entry] {
+    func compareFolders(folder1: URL, folder2: URL, stopList: [String]) async throws -> [Entry] {
         var list = [Entry]()
-        let stopList = [String]() // TODO: fetch stop list from user defaults
         try await listInto(&list, withFolder: folder1, withFolder: folder2, firstPass: true, stopList: stopList)
         try await listInto(&list, withFolder: folder2, withFolder: folder1, firstPass: false, stopList: stopList)
         currentFolder = nil // signal finished

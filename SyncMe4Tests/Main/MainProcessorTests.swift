@@ -10,6 +10,7 @@ final class MainProcessorTests {
     let preflighter = MockPreflighter()
     let sorter = MockSorter()
     let finderScripter = MockFinderScripter()
+    let persistence = MockPersistence()
 
     init() {
         subject.presenter = presenter
@@ -18,6 +19,7 @@ final class MainProcessorTests {
         services.preflighter = preflighter
         services.sorter = sorter
         services.finderScripter = finderScripter
+        services.persistence = persistence
     }
 
     isolated
@@ -141,10 +143,13 @@ final class MainProcessorTests {
         preflighter.folders = ["Manny", "Moe", "Jack"]
         subject.state.selectedResults = [1, 2, 3]
         subject.state.results = [Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)]
+        persistence.stopList = ["Groucho"]
         await subject.receive(.preflight)
-        #expect(preflighter.methodsCalled == ["prepare()", "compareFolders(folder1:folder2:)"])
+        #expect(persistence.methodsCalled == ["loadStopList()"])
+        #expect(preflighter.methodsCalled == ["prepare()", "compareFolders(folder1:folder2:stopList:)"])
         #expect(preflighter.folder1 == subject.state.leftFolder)
         #expect(preflighter.folder2 == subject.state.rightFolder)
+        #expect(preflighter.stopList == ["Groucho"])
         #expect(subject.state.results == [entry])
         #expect(presenter.statesPresented.count == 2)
         #expect(presenter.statesPresented[0].results == [])

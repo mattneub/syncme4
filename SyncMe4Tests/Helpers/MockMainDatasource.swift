@@ -11,5 +11,4 @@ final class MockMainDatasource: NSObject, @MainActor TableViewDatasourceType {
         methodsCalled.append(#function)
         self.statePresented = state
     }
-
 }

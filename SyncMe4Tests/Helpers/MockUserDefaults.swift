@@ -12,8 +12,14 @@ final class MockUserDefaults: UserDefaultsType {
         dictionary = registrationDictionary
     }
 
-    func array(forKey defaultName: String) -> [Any]? {
+    func array(forKey key: String) -> [Any]? {
         methodsCalled.append(#function)
-        return thingsToReturn[defaultName] as? [Any]
+        return thingsToReturn[key] as? [Any]
     }
+
+    func set(_ value: Any?, forKey key: String) {
+        methodsCalled.append(#function)
+        thingsSet[key] = value
+    }
+
 }

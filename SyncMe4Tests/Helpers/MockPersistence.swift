@@ -13,4 +13,10 @@ final class MockPersistence: PersistenceType {
         methodsCalled.append(#function)
         return stopList
     }
+
+    func saveStopList(_ list: [String]) {
+        methodsCalled.append(#function)
+        stopList = list
+    }
+
 }

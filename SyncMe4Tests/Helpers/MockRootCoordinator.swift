@@ -14,6 +14,10 @@ final class MockRootCoordinator: RootCoordinatorType {
         methodsCalled.append(#function)
     }
 
+    func closePrefs() {
+        methodsCalled.append(#function)
+    }
+
     func destroyPrefs() {
         methodsCalled.append(#function)
     }

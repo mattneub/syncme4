@@ -7,6 +7,7 @@ struct Defaults {
 protocol PersistenceType {
     func registerDefaults()
     func loadStopList() -> [String]
+    func saveStopList(_: [String])
 }
 
 final class Persistence: PersistenceType {
@@ -26,5 +27,9 @@ final class Persistence: PersistenceType {
 
     func loadStopList() -> [String] {
         return (services.userDefaults.array(forKey: Defaults.stopList) as? [String]) ?? []
+    }
+
+    func saveStopList(_ list: [String]) {
+        services.userDefaults.set(list, forKey: Defaults.stopList)
     }
 }

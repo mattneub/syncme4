@@ -1,1 +1,3 @@
-struct PrefsState: Equatable {}
+struct PrefsState: Equatable {
+    var stopListItems = [StopListItem]()
+}

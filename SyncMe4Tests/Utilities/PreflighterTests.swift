@@ -51,6 +51,15 @@ struct PreflighterTests: ~Copyable {
         #expect(result[0].why == .absentRight)
     }
 
+    @Test("compareFolders: correct for absent right when item is a folder and in the stop list")
+    func absentRightFolderStopList() async {
+        let subject = Preflighter()
+        let copyFrom = url1.appending(component: "test", directoryHint: .isDirectory)
+        try! FileManager.default.createDirectory(at: copyFrom, withIntermediateDirectories: true)
+        let result = try! await subject.compareFolders(folder1: url1, folder2: url2, stopList: ["test"])
+        #expect(result.count == 0)
+    }
+
     @Test("compareFolders: correct for absent left")
     func absentLeft() async {
         let subject = Preflighter()

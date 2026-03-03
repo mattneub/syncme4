@@ -7,6 +7,7 @@ final class MockTableView: NSTableView {
     var _sortDescriptors: [NSSortDescriptor] = []
     var _numberOfRows: Int = 0
     var _rowsScrolledTo = [Int]()
+    var _rowForView: Int = 0
     override var numberOfRows: Int { _numberOfRows }
     override var selectedRow: Int { _selectedRow }
     override var selectedRowIndexes: IndexSet { _selectedRowIndexes }
@@ -14,6 +15,7 @@ final class MockTableView: NSTableView {
         get { _sortDescriptors }
         set {}
     }
+    override func row(for: NSView) -> Int { _rowForView }
     override func selectRowIndexes(_ indexes: IndexSet, byExtendingSelection: Bool) {
         methodsCalled.append(#function)
         _selectedRowIndexes = indexes

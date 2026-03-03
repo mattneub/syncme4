@@ -44,4 +44,10 @@ struct PersistenceTests {
             #expect(result == [])
         }
     }
+
+    @Test("saveStopList: saves string array for stopList key")
+    func saveStopList() {
+        subject.saveStopList(["Groucho", "Harpo", "Chico"])
+        #expect(userDefaults.thingsSet["stopList"] as? [String] == ["Groucho", "Harpo", "Chico"])
+    }
 }

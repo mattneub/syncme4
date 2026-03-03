@@ -3,6 +3,7 @@ import AppKit
 protocol RootCoordinatorType: AnyObject {
     func createMainModule(window: NSWindow)
     func showPrefs()
+    func closePrefs()
     func destroyPrefs()
 }
 
@@ -16,7 +17,7 @@ final class RootCoordinator: RootCoordinatorType {
     weak var mainWindow: NSWindow?
 
     var mainProcessor: (any Processor<MainAction, MainState, MainEffect>)?
-    var prefsProcessor: (any Processor<PrefsAction, PrefsState, Void>)?
+    var prefsProcessor: (any Processor<PrefsAction, PrefsState, PrefsEffect>)?
 
     func createMainModule(window: NSWindow) {
         let processor = MainProcessor()
@@ -43,6 +44,13 @@ final class RootCoordinator: RootCoordinatorType {
         prefsWindowController = windowController
         window?.center()
         window?.makeKeyAndOrderFront(self)
+    }
+
+    func closePrefs() {
+        if let windowController = prefsWindowController {
+            windowController.close()
+            destroyPrefs()
+        }
     }
 
     func destroyPrefs() {

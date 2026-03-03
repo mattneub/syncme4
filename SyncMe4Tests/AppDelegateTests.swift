@@ -28,6 +28,15 @@ private struct AppDelegateTests: ~Copyable {
         #expect(coordinator.window === window)
         #expect(persistence.methodsCalled == ["registerDefaults()"])
     }
+
+    @Test("doPrefs: calls coordinator showPrefs")
+    func doPrefs() {
+        let subject = AppDelegate()
+        let coordinator = MockRootCoordinator()
+        subject.rootCoordinator = coordinator
+        subject.doPrefs(NSMenuItem())
+        #expect(coordinator.methodsCalled == ["showPrefs()"])
+    }
 }
 
 

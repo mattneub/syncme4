@@ -38,8 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.makeKeyAndOrderFront(nil)
         services.persistence.registerDefaults()
         // window.setFrameAutosaveName("SyncMe4_Main_Window")
-        // hook Option menu to our "manual binding" system
-        // NSApplication.shared.mainMenu?.item(withTitle: "Option")?.submenu?.delegate = self
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -48,4 +46,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         unlessTesting(true)
     }
+
+    @IBAction func doPrefs(_ sender: Any) {
+        rootCoordinator.showPrefs()
+    }
+
+    // By playing around with this, I discovered that this instance was being destroyed and another
+    // instance substituted for it, in a way that broke the nil-targeted action chain and also meant
+    // that `shouldTerminate` was not being obeyed. But where did the other instance come from?
+    // It's really hard to say; I think it was being created in MainMenu.xib, but I could not
+    // understand why it was being substituted for this instance. Anyway, deleting it from
+    // MainMenu.xib fixed the problem.
+    deinit {
+        print("farewell from app delegate", self)
+    }
+
 }

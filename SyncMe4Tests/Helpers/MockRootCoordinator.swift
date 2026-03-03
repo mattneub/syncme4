@@ -9,4 +9,13 @@ final class MockRootCoordinator: RootCoordinatorType {
         methodsCalled.append(#function)
         self.window = window
     }
+
+    func showPrefs() {
+        methodsCalled.append(#function)
+    }
+
+    func destroyPrefs() {
+        methodsCalled.append(#function)
+    }
+
 }

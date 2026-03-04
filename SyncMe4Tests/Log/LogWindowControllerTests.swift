@@ -2,8 +2,8 @@ import Testing
 @testable import SyncMe4
 import AppKit
 
-private struct PrefsWindowControllerTests: ~Copyable {
-    let subject = PrefsWindowController()
+private struct LogWindowControllerTests: ~Copyable {
+    let subject = LogWindowController()
     let coordinator = MockRootCoordinator()
 
     init() {
@@ -16,7 +16,7 @@ private struct PrefsWindowControllerTests: ~Copyable {
 
     @Test("windowNibName: is correct")
     func windowNibName() {
-        #expect(subject.windowNibName == "Prefs")
+        #expect(subject.windowNibName == "Log")
     }
 
     @Test("the nib loads correctly")
@@ -30,7 +30,7 @@ private struct PrefsWindowControllerTests: ~Copyable {
     @Test("shouldClose: calls coordinator destroyPrefs, returns true")
     func shouldClose() {
         let result = subject.windowShouldClose(NSWindow())
-        #expect(coordinator.methodsCalled == ["destroyPrefs()"])
+        #expect(coordinator.methodsCalled == ["destroyLog()"])
         #expect(result == true)
     }
 }

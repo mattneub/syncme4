@@ -54,6 +54,15 @@ private struct AppDelegateTests: ~Copyable {
         #expect(workspace.methodsCalled == ["open(_:)"])
         #expect(workspace.url == bundle.urlToReturn)
     }
+
+    @Test("showLogWindow: calls coordinator showLog")
+    func showLogWindow() {
+        let subject = AppDelegate()
+        let coordinator = MockRootCoordinator()
+        subject.rootCoordinator = coordinator
+        subject.showLogWindow(NSMenuItem())
+        #expect(coordinator.methodsCalled == ["showLog()"])
+    }
 }
 
 

@@ -4,6 +4,7 @@ final class Services {
     var beeper: any BeeperType = Beeper()
     var bundle: any BundleType = Bundle.main
     var finderScripter: any FinderScripterType = FinderScripter()
+    var log: any LogType = Log()
     var openPanelOpener: any OpenPanelOpenerType = OpenPanelOpener()
     var openPanelFactory: any OpenPanelFactoryType = OpenPanelFactory()
     var persistence: any PersistenceType = Persistence()

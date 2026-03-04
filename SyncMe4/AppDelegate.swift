@@ -59,6 +59,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @objc func showLogWindow(_ sender: Any) {
+        rootCoordinator.showLog()
+    }
+
     // By playing around with this, I discovered that this instance was being destroyed and another
     // instance substituted for it, in a way that broke the nil-targeted action chain and also meant
     // that `shouldTerminate` was not being obeyed. But where did the other instance come from?

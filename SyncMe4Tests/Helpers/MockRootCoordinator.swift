@@ -22,4 +22,16 @@ final class MockRootCoordinator: RootCoordinatorType {
         methodsCalled.append(#function)
     }
 
+    func showLog() {
+        methodsCalled.append(#function)
+    }
+
+    func closeLog() {
+        methodsCalled.append(#function)
+    }
+
+    func destroyLog() {
+        methodsCalled.append(#function)
+    }
+
 }

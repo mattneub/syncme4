@@ -134,7 +134,9 @@ final class MainProcessor: Processor {
             progressWatchingTask?.cancel()
             state.disabled = false
             await presenter?.present(state)
-            print(error) // TODO: do something useful with error
+            await presenter?.receive(.currentFolder(nil))
+            services.log.append(String(describing: error))
+            coordinator?.showLog()
         }
     }
 
@@ -159,7 +161,8 @@ final class MainProcessor: Processor {
                 await presenter?.present(state)
             }
         } catch {
-            print(error) // TODO: do something useful with error
+            services.log.append(String(describing: error))
+            coordinator?.showLog()
         }
         state.disabled = false
         await presenter?.present(state)
@@ -189,7 +192,8 @@ final class MainProcessor: Processor {
                 await presenter?.present(state)
             }
         } catch {
-            print(error) // TODO: do something useful with error
+            services.log.append(String(describing: error))
+            coordinator?.showLog()
         }
         await presenter?.receive(.currentFolder(nil))
         state.disabled = false

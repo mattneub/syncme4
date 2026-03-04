@@ -10,6 +10,7 @@ final class MockPreflighter: PreflighterType {
     @ObservationIgnored var stopList: [String]?
     @ObservationIgnored var entries = [Entry]()
     @ObservationIgnored var folders = [String]()
+    @ObservationIgnored var error: (any Error)?
 
     func prepare() {
         methodsCalled.append(#function)
@@ -23,6 +24,9 @@ final class MockPreflighter: PreflighterType {
         while !folders.isEmpty {
             currentFolder = folders.popLast()
             try? await Task.sleep(for: .seconds(0.1))
+        }
+        if let error {
+            throw error
         }
         currentFolder = nil
         try? await Task.sleep(for: .seconds(0.1))

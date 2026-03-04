@@ -11,15 +11,19 @@ final class MainProcessorTests {
     let sorter = MockSorter()
     let finderScripter = MockFinderScripter()
     let persistence = MockPersistence()
+    let log = MockLog()
+    let coordinator = MockRootCoordinator()
 
     init() {
         subject.presenter = presenter
+        subject.coordinator = coordinator
         services.openPanelOpener = openPanelOpener
         services.beeper = beeper
         services.preflighter = preflighter
         services.sorter = sorter
         services.finderScripter = finderScripter
         services.persistence = persistence
+        services.log = log
     }
 
     isolated
@@ -83,6 +87,9 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented.count == 2)
         #expect(presenter.statesPresented[0].disabled == true)
         #expect(presenter.statesPresented[1].disabled == false)
+        #expect(log.methodsCalled == ["append(_:)"])
+        #expect(log.text == "Error Domain=hey Code=0 \"(null)\"")
+        #expect(coordinator.methodsCalled == ["showLog()"])
     }
 
     @Test("receive copyAll: is cancellable")
@@ -151,9 +158,11 @@ final class MainProcessorTests {
         #expect(preflighter.folder2 == subject.state.rightFolder)
         #expect(preflighter.stopList == ["Groucho"])
         #expect(subject.state.results == [entry])
+        #expect(subject.state.disabled == false)
         #expect(presenter.statesPresented.count == 2)
         #expect(presenter.statesPresented[0].results == [])
         #expect(presenter.statesPresented[0].selectedResults == [])
+        #expect(presenter.statesPresented[0].disabled == true)
         #expect(presenter.statesPresented[1] == subject.state)
         #expect(presenter.thingsReceived.count == 4)
         #expect(presenter.thingsReceived == [.currentFolder("Jack"), .currentFolder("Moe"), .currentFolder("Manny"), .currentFolder(nil)])
@@ -201,6 +210,39 @@ final class MainProcessorTests {
             #expect(beeper.methodsCalled == ["beep()"])
             #expect(preflighter.methodsCalled.isEmpty)
         }
+    }
+
+    @Test("receive preflight: if compare throws, cancels task, enables and presents, appends to log, opens log")
+    func preflightWithError() async {
+        subject.state.leftFolder = URL(string: "http://www.example.com")!
+        subject.state.rightFolder = URL(string: "http://www.example2.com")!
+        let entry = Entry(copyFrom: URL(string: "http://www.nothing1.com")!, copyTo: URL(string: "http://www.nothing2.com")!, why: .olderLeft)
+        preflighter.entries = [entry]
+        preflighter.folders = ["Manny", "Moe", "Jack"]
+        subject.state.selectedResults = [1, 2, 3]
+        subject.state.results = [Entry(copyFrom: URL(string: "file:///dummy")!, copyTo: URL(string: "file:///dummy")!, why: .olderRight)]
+        persistence.stopList = ["Groucho"]
+        preflighter.error = NSError(domain: "ho", code: 0)
+        await subject.receive(.preflight)
+        #expect(persistence.methodsCalled == ["loadStopList()"])
+        #expect(preflighter.methodsCalled == ["prepare()", "compareFolders(folder1:folder2:stopList:)"])
+        #expect(preflighter.folder1 == subject.state.leftFolder)
+        #expect(preflighter.folder2 == subject.state.rightFolder)
+        #expect(preflighter.stopList == ["Groucho"])
+        #expect(subject.state.results == []) // *
+        #expect(subject.state.disabled == false)
+        #expect(presenter.statesPresented.count == 2)
+        #expect(presenter.statesPresented[0].results == [])
+        #expect(presenter.statesPresented[0].selectedResults == [])
+        #expect(presenter.statesPresented[0].disabled == true)
+        #expect(presenter.statesPresented[1] == subject.state)
+        #expect(presenter.thingsReceived.count == 4)
+        // current folder nil was set by processor, not via preflighter; so too cancellation
+        #expect(presenter.thingsReceived == [.currentFolder("Jack"), .currentFolder("Moe"), .currentFolder("Manny"), .currentFolder(nil)])
+        #expect(subject.progressWatchingTask?.isCancelled == true)
+        #expect(log.methodsCalled == ["append(_:)"])
+        #expect(log.text == "Error Domain=ho Code=0 \"(null)\"")
+        #expect(coordinator.methodsCalled == ["showLog()"])
     }
 
     @Test("receive removeFromList: deletes results at given indexes, configures state, presents")
@@ -373,6 +415,9 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented.count == 2)
         #expect(presenter.statesPresented[0].disabled == true)
         #expect(presenter.statesPresented[1].disabled == false)
+        #expect(log.methodsCalled == ["append(_:)"])
+        #expect(log.text == "Error Domain=domain Code=0 \"(null)\"")
+        #expect(coordinator.methodsCalled == ["showLog()"])
     }
 
     @Test("receive trashTarget: calls finder scripter trash with copyTo and presenter scroll, reconciles state and presents, for each listed entry")
@@ -418,6 +463,9 @@ final class MainProcessorTests {
         #expect(presenter.statesPresented.count == 2)
         #expect(presenter.statesPresented[0].disabled == true)
         #expect(presenter.statesPresented[1].disabled == false)
+        #expect(log.methodsCalled == ["append(_:)"])
+        #expect(log.text == "Error Domain=domain Code=0 \"(null)\"")
+        #expect(coordinator.methodsCalled == ["showLog()"])
     }
 
     @Test("receive trashTarget: if any chosen entry has no existing destination, beeps and stops")

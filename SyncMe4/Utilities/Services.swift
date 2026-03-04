@@ -1,7 +1,8 @@
-import Foundation
+import AppKit
 
 final class Services {
     var beeper: any BeeperType = Beeper()
+    var bundle: any BundleType = Bundle.main
     var finderScripter: any FinderScripterType = FinderScripter()
     var openPanelOpener: any OpenPanelOpenerType = OpenPanelOpener()
     var openPanelFactory: any OpenPanelFactoryType = OpenPanelFactory()
@@ -9,4 +10,5 @@ final class Services {
     var preflighter: any PreflighterType = Preflighter()
     var sorter: any SorterType = Sorter()
     var userDefaults: any UserDefaultsType = UserDefaults.standard
+    var workspace: any WorkspaceType = NSWorkspace.shared
 }

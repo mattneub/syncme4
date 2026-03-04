@@ -37,6 +37,23 @@ private struct AppDelegateTests: ~Copyable {
         subject.doPrefs(NSMenuItem())
         #expect(coordinator.methodsCalled == ["showPrefs()"])
     }
+
+    @Test("showHelp: calls bundle, then workspace")
+    func showHelp() {
+        let subject = AppDelegate()
+        let bundle = MockBundle()
+        let workspace = MockWorkspace()
+        services.bundle = bundle
+        services.workspace = workspace
+        bundle.urlToReturn = URL(string: "http://www.example.com")!
+        subject.showHelp(NSMenuItem())
+        #expect(bundle.methodsCalled == ["url(forResource:withExtension:subdirectory:)"])
+        #expect(bundle.name == "help")
+        #expect(bundle.ext == "html")
+        #expect(bundle.subpath == "help")
+        #expect(workspace.methodsCalled == ["open(_:)"])
+        #expect(workspace.url == bundle.urlToReturn)
+    }
 }
 
 

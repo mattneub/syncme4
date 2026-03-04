@@ -59,6 +59,9 @@
 		};
 		3FFFB9502F4A132A004ECD71 /* SyncMe4 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFolders = (
+				Resources/help,
+			);
 			path = SyncMe4;
 			sourceTree = "<group>";
 		};

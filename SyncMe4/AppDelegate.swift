@@ -38,6 +38,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.makeKeyAndOrderFront(nil)
         services.persistence.registerDefaults()
         // window.setFrameAutosaveName("SyncMe4_Main_Window")
+        // target the help menu item at the app delegate, since first responder targeting doesn't seem to work here
+        NSApplication.shared.mainMenu?.item(withTitle: "Help")?.submenu?.item(at: 0)?.target = self
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -47,8 +49,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         unlessTesting(true)
     }
 
-    @IBAction func doPrefs(_ sender: Any) {
+    @objc func doPrefs(_ sender: Any) {
         rootCoordinator.showPrefs()
+    }
+
+    @objc func showHelp(_ sender: Any) {
+        if let url = services.bundle.url(forResource: "help", withExtension: "html", subdirectory: "help") {
+            _ = services.workspace.open(url)
+        }
     }
 
     // By playing around with this, I discovered that this instance was being destroyed and another

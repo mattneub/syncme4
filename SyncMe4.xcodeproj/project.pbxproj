@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3F556A5A2F4BA763004B0285 /* WaitWhile in Frameworks */ = {isa = PBXBuildFile; productRef = 3F556A592F4BA763004B0285 /* WaitWhile */; };
+		3F6DC67E2F58F522001A78D5 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3F6DC67D2F58F522001A78D5 /* AppIcon.icon */; };
 		3FFFB96D2F4A1F0C004ECD71 /* MacOSGlues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		3FFFB96E2F4A1F0C004ECD71 /* SwiftAutomation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96C2F4A1EEE004ECD71 /* SwiftAutomation.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		3FFFB96F2F4A1F0C004ECD71 /* AppleEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -45,6 +46,7 @@
 /* Begin PBXFileReference section */
 		3F5568EF2F4BA582004B0285 /* SyncMe4Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncMe4Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SyncMe4.xctestplan; sourceTree = "<group>"; };
+		3F6DC67D2F58F522001A78D5 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		3FFFB94E2F4A132A004ECD71 /* SyncMe4.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncMe4.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AppleEvents.framework; sourceTree = "<group>"; };
 		3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MacOSGlues.framework; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 		3FFFB9452F4A132A004ECD71 = {
 			isa = PBXGroup;
 			children = (
+				3F6DC67D2F58F522001A78D5 /* AppIcon.icon */,
 				3F556A5D2F4BA8C3004B0285 /* SyncMe4.xctestplan */,
 				3FFFB96A2F4A1EEE004ECD71 /* AppleEvents.framework */,
 				3FFFB96B2F4A1EEE004ECD71 /* MacOSGlues.framework */,
@@ -223,6 +226,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F6DC67E2F58F522001A78D5 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

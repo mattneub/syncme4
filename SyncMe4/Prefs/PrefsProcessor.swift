@@ -29,4 +29,8 @@ final class PrefsProcessor: Processor {
             coordinator?.closePrefs()
         }
     }
+
+    deinit {
+        print("farewell from prefs processor")
+    }
 }

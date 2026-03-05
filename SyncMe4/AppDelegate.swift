@@ -36,8 +36,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.minSize = CGSize(width: 682, height: 450 + 32)
         window.maxSize = CGSize(width: 10000, height: 10000)
         window.makeKeyAndOrderFront(nil)
+        window.delegate = self
         services.persistence.registerDefaults()
-        // window.setFrameAutosaveName("SyncMe4_Main_Window")
+        window.setFrameAutosaveName("SyncMe4_Main_Window")
         // target the help menu item at the app delegate, since first responder targeting doesn't seem to work here
         NSApplication.shared.mainMenu?.item(withTitle: "Help")?.submenu?.item(at: 0)?.target = self
     }
@@ -73,4 +74,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("farewell from app delegate", self)
     }
 
+}
+
+extension AppDelegate: NSWindowDelegate {
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        services.application.terminate(self)
+        return true
+    }
 }

@@ -145,14 +145,14 @@
                         <rect key="frame" x="1" y="1" width="640" height="174"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="15" headerView="hKq-PM-4Yw" viewBased="YES" id="UW6-Cj-Qkq" customClass="MyScrollableTableView" customModule="SyncMe4" customModuleProvider="target">
+                            <tableView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveName="SyncMe4_TableView" rowHeight="15" headerView="hKq-PM-4Yw" viewBased="YES" id="UW6-Cj-Qkq" customClass="MyScrollableTableView" customModule="SyncMe4" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="640" height="146"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="separatorColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
-                                    <tableColumn identifier="path" width="529" minWidth="40" maxWidth="1000" id="jFK-q0-3qs" userLabel="path">
+                                    <tableColumn identifier="path" width="585" minWidth="40" maxWidth="10000" id="jFK-q0-3qs" userLabel="path">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -165,12 +165,11 @@
                                         <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="path"/>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView id="l4i-os-r4L">
-                                                <rect key="frame" x="1" y="1" width="534" height="24"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <tableCellView translatesAutoresizingMaskIntoConstraints="NO" id="l4i-os-r4L">
+                                                <rect key="frame" x="1" y="1" width="590" height="24"/>
                                                 <subviews>
                                                     <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="nqQ-UY-jJc">
-                                                        <rect key="frame" x="0.0" y="10" width="534" height="14"/>
+                                                        <rect key="frame" x="0.0" y="10" width="590" height="14"/>
                                                         <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="7Sd-gP-GOA">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -189,7 +188,7 @@
                                             </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
-                                    <tableColumn identifier="why" width="40" minWidth="40" maxWidth="1000" id="kU4-3n-6Xi" userLabel="why">
+                                    <tableColumn identifier="why" width="40" minWidth="40" maxWidth="40" id="kU4-3n-6Xi" userLabel="why">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -200,10 +199,9 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="why"/>
-                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
                                             <tableCellView id="AaZ-RB-JV7">
-                                                <rect key="frame" x="538" y="1" width="44" height="24"/>
+                                                <rect key="frame" x="594" y="1" width="44" height="24"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uur-aP-Hip">

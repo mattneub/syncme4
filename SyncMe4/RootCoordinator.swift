@@ -44,7 +44,6 @@ final class RootCoordinator: RootCoordinatorType {
         processor.presenter = viewController
         viewController?.processor = processor
         prefsWindowController = windowController
-        window?.center()
         window?.makeKeyAndOrderFront(self)
     }
 
@@ -74,7 +73,6 @@ final class RootCoordinator: RootCoordinatorType {
         processor.presenter = viewController
         viewController?.processor = processor
         logWindowController = windowController
-        window?.center()
         window?.makeKeyAndOrderFront(self)
     }
 

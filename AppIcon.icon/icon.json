@@ -1,8 +1,8 @@
 {
   "fill" : {
     "linear-gradient" : [
-      "display-p3:0.92596,0.51240,0.34111,1.00000",
-      "display-p3:0.46623,0.14544,0.10882,1.00000"
+      "extended-gray:1.00000,1.00000",
+      "extended-gray:0.74934,1.00000"
     ],
     "orientation" : {
       "start" : {

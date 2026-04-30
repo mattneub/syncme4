@@ -64,7 +64,7 @@ class FolderTextField: NSTextField {
     }
 
     func finished() {
-        Task {
+        Task.immediate {
             backgroundColor = NSColor.white
         }
     }

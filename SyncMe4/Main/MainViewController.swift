@@ -60,7 +60,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.allowsMultipleSelection = true
-        Task {
+        Task.immediate {
             await processor?.receive(.tickle)
         }
     }
@@ -126,10 +126,10 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     @IBAction func textFieldChanged(_ sender: Any) {
         if let tf = sender as? NSTextField {
             switch tf {
-            case leftField: Task {
+            case leftField: Task.immediate {
                 await processor?.receive(.leftFieldChanged(tf.objectValue as? URL))
             }
-            case rightField: Task {
+            case rightField: Task.immediate {
                 await processor?.receive(.rightFieldChanged(tf.objectValue as? URL))
             }
             default: break
@@ -138,7 +138,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     }
 
     @IBAction func leftFieldChoose(_ sender: Any) {
-        Task {
+        Task.immediate {
             if let window = (sender as? NSView)?.window {
                 await processor?.receive(.leftFieldChoose(window))
             }
@@ -146,7 +146,7 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     }
 
     @IBAction func rightFieldChoose(_ sender: Any) {
-        Task {
+        Task.immediate {
             if let window = (sender as? NSView)?.window {
                 await processor?.receive(.rightFieldChoose(window))
             }
@@ -154,55 +154,55 @@ final class MainViewController: NSViewController, ReceiverPresenter {
     }
 
     @IBAction func preflight(_ sender: Any) {
-        cancellableTask = Task {
+        cancellableTask = Task.immediate {
             await processor?.receive(.preflight)
         }
     }
 
     @IBAction func doUnsort(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.unsort)
         }
     }
 
     @IBAction func doRemoveFromList(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.removeFromList(tableView.selectedRowIndexes))
         }
     }
 
     @IBAction func doReverseDirection(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.reverseDirection(tableView.selectedRow))
         }
     }
 
     @IBAction func doReveal(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.reveal(tableView.selectedRow))
         }
     }
 
     @IBAction func doRevealTarget(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.revealTarget(tableView.selectedRow))
         }
     }
 
     @IBAction func doTrash(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.trash(tableView.selectedRowIndexes))
         }
     }
 
     @IBAction func doTrashTarget(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.trashTarget(tableView.selectedRowIndexes))
         }
     }
 
     @IBAction func doCopyAll(_ sender: Any) {
-        cancellableTask = Task {
+        cancellableTask = Task.immediate {
             await processor?.receive(.copyAll)
         }
     }

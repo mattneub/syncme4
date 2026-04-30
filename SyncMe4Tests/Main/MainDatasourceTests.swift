@@ -1,7 +1,6 @@
 @testable import SyncMe4
 import Testing
 import AppKit
-import WaitWhile
 
 private struct MainDatasourceTests {
     let subject: MainDatasource!
@@ -37,7 +36,6 @@ private struct MainDatasourceTests {
     func rows() async throws {
         let result = Entry(copyFrom: URL(string: "file:///a/b")!, copyTo: URL(string: "file:///c/d")!, why: .olderLeft)
         await subject.present(MainState(results: [result]))
-        await #while(tableView.numberOfRows < 1)
         do {
             let view = try #require(tableView.view(atColumn: 1, row: 0, makeIfNecessary: false) as? NSTableCellView)
             #expect(view.imageView?.image == NSImage(named: "leftarrowred"))
@@ -49,12 +47,11 @@ private struct MainDatasourceTests {
     }
 
     @Test("selectionChanged: sends selectedRows to processor")
-    func selectionChanged() async {
+    func selectionChanged() {
         let tableView = MockTableView()
         tableView._selectedRowIndexes = [3]
         subject.tableView = tableView
         subject.tableViewSelectionDidChange(Notification(name: .init("dummy")))
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.selectedRows([3])])
     }
 
@@ -67,7 +64,6 @@ private struct MainDatasourceTests {
         let datasourceProcessor = try #require(datasource.processor)
         #expect(datasourceProcessor === processor)
         datasource.tableView(tableView, sortDescriptorsDidChange: [])
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.updateResults([sortDescriptor])])
     }
 }

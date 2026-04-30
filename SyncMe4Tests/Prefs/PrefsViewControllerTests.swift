@@ -1,7 +1,6 @@
 @testable import SyncMe4
 import Testing
 import AppKit
-import WaitWhile
 
 struct PrefsViewControllerTests {
     let subject = PrefsViewController()
@@ -26,9 +25,8 @@ struct PrefsViewControllerTests {
     }
 
     @Test("viewDidLoad: sends initialData")
-    func viewDidLoad() async {
+    func viewDidLoad() {
         subject.viewDidLoad()
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.initialData])
     }
 
@@ -46,7 +44,7 @@ struct PrefsViewControllerTests {
     }
 
     @Test("doAdd: ends editing, sends add")
-    func doAdd() async throws {
+    func doAdd() throws {
         let window = makeWindow(viewController: subject)
         let textField = NSTextField()
         subject.view.addSubview(textField)
@@ -55,12 +53,11 @@ struct PrefsViewControllerTests {
         #expect(window.firstResponder === editor)
         subject.doAdd(NSButton())
         #expect(window.firstResponder == window)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived.last == .add)
     }
 
     @Test("doDelete: ends editing, sends delete for selected row")
-    func doDelete() async throws {
+    func doDelete() throws {
         makeWindow(viewController: subject)
         let textField = NSTextField()
         subject.view.addSubview(textField)
@@ -71,7 +68,6 @@ struct PrefsViewControllerTests {
         subject.tableView = tableView
         subject.doDelete(NSButton())
         #expect(textField.currentEditor() == nil)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived.last == .delete(row: 10))
     }
 
@@ -92,14 +88,13 @@ struct PrefsViewControllerTests {
     }
 
     @Test("doCancel: sends cancel")
-    func doCancel() async {
+    func doCancel() {
         subject.doCancel(NSButton())
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.cancel])
     }
 
     @Test("doSave: ends editing, sends save")
-    func doSave() async {
+    func doSave() {
         makeWindow(viewController: subject)
         let textField = NSTextField()
         subject.view.addSubview(textField)
@@ -110,12 +105,11 @@ struct PrefsViewControllerTests {
         subject.tableView = tableView
         subject.doSave(NSButton())
         #expect(textField.currentEditor() == nil)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived.last == .save)
     }
 
     @Test("didEndEditing: sends changed for sender text field")
-    func didEndEditing() async throws {
+    func didEndEditing() throws {
         subject.loadViewIfNeeded()
         let tableView = MockTableView()
         tableView._rowForView = 20
@@ -123,7 +117,6 @@ struct PrefsViewControllerTests {
         let textField = NSTextField()
         textField.stringValue = "howdy"
         subject.didEndEditing(textField)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived.last == .changed(row: 20, text: "howdy"))
     }
 

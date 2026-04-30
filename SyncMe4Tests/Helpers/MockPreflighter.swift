@@ -3,14 +3,14 @@ import AppKit
 
 @Observable
 final class MockPreflighter: PreflighterType {
-    var currentFolder: String?
-    @ObservationIgnored var methodsCalled = [String]()
-    @ObservationIgnored var folder1: URL?
-    @ObservationIgnored var folder2: URL?
-    @ObservationIgnored var stopList: [String]?
-    @ObservationIgnored var entries = [Entry]()
-    @ObservationIgnored var folders = [String]()
-    @ObservationIgnored var error: (any Error)?
+    nonisolated(unsafe) var currentFolder: String?
+    @ObservationIgnored nonisolated(unsafe) var methodsCalled = [String]()
+    @ObservationIgnored nonisolated(unsafe) var folder1: URL?
+    @ObservationIgnored nonisolated(unsafe) var folder2: URL?
+    @ObservationIgnored nonisolated(unsafe) var stopList: [String]?
+    @ObservationIgnored nonisolated(unsafe) var entries = [Entry]()
+    @ObservationIgnored nonisolated(unsafe) var folders = [String]()
+    @ObservationIgnored nonisolated(unsafe) var error: (any Error)?
 
     func prepare() {
         methodsCalled.append(#function)

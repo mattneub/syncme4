@@ -1,7 +1,6 @@
 @testable import SyncMe4
 import Testing
 import AppKit
-import WaitWhile
 
 struct MainViewControllerTests {
     let subject = MainViewController()
@@ -37,10 +36,9 @@ struct MainViewControllerTests {
     }
 
     @Test("viewDidLoad: configures table view, sends tickle")
-    func viewDidLoad() async {
+    func viewDidLoad() {
         subject.loadViewIfNeeded()
         #expect(subject.tableView.allowsMultipleSelection == true)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.tickle])
     }
 
@@ -208,124 +206,110 @@ struct MainViewControllerTests {
     }
 
     @Test("textFieldChanged: sends left/right field changed depending on sender")
-    func textFieldChanged() async {
+    func textFieldChanged() {
         subject.loadViewIfNeeded()
-        await #while(processor.thingsReceived.isEmpty)
         processor.thingsReceived = []
         let url1 = URL(string: "http://www.example1.com")!
         let url2 = URL(string: "http://www.example2.com")!
         subject.leftField.objectValue = url1
         subject.rightField.objectValue = url2
         subject.textFieldChanged(subject.leftField!)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.leftFieldChanged(url1)])
         processor.thingsReceived = []
         subject.textFieldChanged(subject.rightField!)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.rightFieldChanged(url2)])
     }
 
     @Test("leftFieldChoose: sends left field choose with sender's window")
-    func leftFieldChoose() async {
+    func leftFieldChoose() {
         let view = NSView()
         let window = makeWindow(view: view)
         subject.leftFieldChoose(view)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.leftFieldChoose(window)])
         closeWindows()
     }
 
     @Test("rightFieldChoose: sends right field choose with sender's window")
-    func rightFieldChoose() async {
+    func rightFieldChoose() {
         let view = NSView()
         let window = makeWindow(view: view)
         subject.rightFieldChoose(view)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.rightFieldChoose(window)])
         closeWindows()
     }
 
     @Test("preflight: sends preflight, sets cancellable task")
-    func preflight() async {
+    func preflight() {
         #expect(subject.cancellableTask == nil)
         subject.preflight(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.preflight])
         #expect(subject.cancellableTask != nil)
     }
 
     @Test("doUnsort: sends unsort")
-    func unsort() async {
+    func unsort() {
         subject.doUnsort(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.unsort])
     }
 
     @Test("doRemoveFromList: sends removeFromList with table view selected row indexes")
-    func removeFromList() async {
+    func removeFromList() {
         let tableView = MockTableView()
         tableView._selectedRowIndexes = [1, 2, 3]
         subject.tableView = tableView
         subject.doRemoveFromList(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.removeFromList([1, 2, 3])])
     }
 
     @Test("doReverseDirections: sends reverseDirection with table view selected row")
-    func reverseDirection() async {
+    func reverseDirection() {
         let tableView = MockTableView()
         tableView._selectedRow = 1
         subject.tableView = tableView
         subject.doReverseDirection(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.reverseDirection(1)])
     }
 
     @Test("doReveal: sends reveal with table view selected row")
-    func reveal() async {
+    func reveal() {
         let tableView = MockTableView()
         tableView._selectedRow = 1
         subject.tableView = tableView
         subject.doReveal(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.reveal(1)])
     }
 
     @Test("doRevealTarget: sends reveal with table view selected row")
-    func revealTarget() async {
+    func revealTarget() {
         let tableView = MockTableView()
         tableView._selectedRow = 1
         subject.tableView = tableView
         subject.doRevealTarget(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.revealTarget(1)])
     }
 
     @Test("doTrash: sends trash with table view selected row indexes")
-    func doTrash() async {
+    func doTrash() {
         let tableView = MockTableView()
         tableView._selectedRowIndexes = [1, 2, 3]
         subject.tableView = tableView
         subject.doTrash(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.trash([1, 2, 3])])
     }
 
     @Test("doTrashTarget: sends trashTarget with table view selected row indexes")
-    func doTrashTarget() async {
+    func doTrashTarget() {
         let tableView = MockTableView()
         tableView._selectedRowIndexes = [1, 2, 3]
         subject.tableView = tableView
         subject.doTrashTarget(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.trashTarget([1, 2, 3])])
     }
 
     @Test("doCopyAll: sends copyAll, sets cancellable task")
-    func doCopyAll() async {
+    func doCopyAll() {
         #expect(subject.cancellableTask == nil)
         subject.doCopyAll(self)
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.copyAll])
         #expect(subject.cancellableTask != nil)
     }

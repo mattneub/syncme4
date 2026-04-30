@@ -7,5 +7,4 @@ framework module AppleEvents {
 
 module AppleEvents.Swift {
   header "AppleEvents-Swift.h"
-  requires objc
 }

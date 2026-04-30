@@ -1,6 +1,6 @@
 import AppKit
 
-protocol PreflighterType {
+protocol PreflighterType: Sendable { // forced to say Sendable to get tests to compile
     var currentFolder: String? { get }
     func prepare()
     func compareFolders(folder1: URL, folder2: URL, stopList: [String]) async throws -> [Entry]
@@ -10,7 +10,8 @@ protocol PreflighterType {
 nonisolated
 final class Preflighter: PreflighterType {
     /// Observable value of the folder we are currently considering.
-    nonisolated var currentFolder: String?
+    /// I don't like this `unsafe` but being forced to say Sendable forced me into it.
+    nonisolated(unsafe) var currentFolder: String?
 
     /// Public method. An observer must call this before starting to observe, so that it does
     /// not immediately see `nil` as the current folder, because `nil` is the signal we've finished.

@@ -1,7 +1,6 @@
 import Testing
 @testable import SyncMe4
 import AppKit
-import WaitWhile
 
 struct LogViewControllerTests {
     let subject = LogViewController()
@@ -18,9 +17,8 @@ struct LogViewControllerTests {
     }
 
     @Test("viewDidLoad: sends initialData")
-    func viewDidLoad() async {
+    func viewDidLoad() {
         subject.viewDidLoad()
-        await #while(processor.thingsReceived.isEmpty)
         #expect(processor.thingsReceived == [.initialData])
     }
 

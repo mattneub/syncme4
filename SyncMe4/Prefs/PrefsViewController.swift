@@ -12,7 +12,7 @@ final class PrefsViewController: NSViewController, ReceiverPresenter {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        Task {
+        Task.immediate {
             await processor?.receive(.initialData)
         }
     }
@@ -27,7 +27,7 @@ final class PrefsViewController: NSViewController, ReceiverPresenter {
 
     @IBAction func doAdd(_ sender: Any) {
         view.window?.endEditing(for: nil)
-        Task {
+        Task.immediate {
             await processor?.receive(.add)
         }
     }
@@ -38,20 +38,20 @@ final class PrefsViewController: NSViewController, ReceiverPresenter {
             return
         }
         view.window?.endEditing(for: nil)
-        Task {
+        Task.immediate {
             await processor?.receive(.delete(row: row))
         }
     }
 
     @IBAction func doCancel(_ sender: Any) {
-        Task {
+        Task.immediate {
             await processor?.receive(.cancel)
         }
     }
 
     @IBAction func doSave(_ sender: Any) {
         view.window?.endEditing(for: nil)
-        Task {
+        Task.immediate {
             await processor?.receive(.save)
         }
     }
@@ -59,7 +59,7 @@ final class PrefsViewController: NSViewController, ReceiverPresenter {
     @objc func didEndEditing(_ sender: NSTextField) {
         let row = tableView.row(for: sender)
         let text = sender.stringValue
-        Task {
+        Task.immediate {
             await processor?.receive(.changed(row: row, text: text))
         }
     }

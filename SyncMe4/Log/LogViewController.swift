@@ -11,7 +11,7 @@ final class LogViewController: NSViewController, ReceiverPresenter {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        Task {
+        Task.immediate {
             await processor?.receive(.initialData)
         }
     }

@@ -9,8 +9,8 @@ final class LogViewController: NSViewController, ReceiverPresenter {
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear() {
+        super.viewWillAppear()
         Task.immediate {
             await processor?.receive(.initialData)
         }

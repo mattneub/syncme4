@@ -175,7 +175,7 @@ final class MainProcessor: Processor {
         await presenter?.receive(.deselectAllAndScrollToTop)
         do {
             while !state.results.isEmpty {
-                try? await ifTesting {
+                try? await unlessTesting {
                     try? await Task.sleep(for: .seconds(0.2))
                 }
                 try Task.checkCancellation()
@@ -183,6 +183,9 @@ final class MainProcessor: Processor {
                 let entry = state.results[0]
                 let currentFolder = entry.sourcePath
                 await presenter?.receive(.currentFolder(currentFolder))
+                try? await unlessTesting {
+                    try? await Task.sleep(for: .seconds(0.2))
+                }
                 try await Task { @concurrent in
                     try await services.finderScripter.copy(from: entry.copyFrom, to: entry.copyTo)
                     // try await Task.sleep(for: .seconds(1))

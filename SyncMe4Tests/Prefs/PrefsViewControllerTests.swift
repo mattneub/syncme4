@@ -24,9 +24,9 @@ struct PrefsViewControllerTests {
         #expect(datasource.tableView === tableView)
     }
 
-    @Test("viewDidLoad: sends initialData")
-    func viewDidLoad() {
-        subject.viewDidLoad()
+    @Test("viewWillAppear: sends initialData")
+    func viewWillAppear() {
+        subject.viewWillAppear()
         #expect(processor.thingsReceived == [.initialData])
     }
 

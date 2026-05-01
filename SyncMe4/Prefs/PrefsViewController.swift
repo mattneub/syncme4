@@ -10,8 +10,8 @@ final class PrefsViewController: NSViewController, ReceiverPresenter {
         processor: processor
     )
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear() {
+        super.viewWillAppear()
         Task.immediate {
             await processor?.receive(.initialData)
         }

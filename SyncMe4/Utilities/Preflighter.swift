@@ -1,22 +1,26 @@
 import AppKit
 
-protocol PreflighterType: Sendable { // forced to say Sendable to get tests to compile
+protocol PreflighterType {
     var currentFolder: String? { get }
     func prepare()
     func compareFolders(folder1: URL, folder2: URL, stopList: [String]) async throws -> [Entry]
 }
 
 @Observable
-nonisolated
 final class Preflighter: PreflighterType {
     /// Observable value of the folder we are currently considering.
-    /// I don't like this `unsafe` but being forced to say Sendable forced me into it.
-    nonisolated(unsafe) var currentFolder: String?
+    var currentFolder: String?
 
     /// Public method. An observer must call this before starting to observe, so that it does
     /// not immediately see `nil` as the current folder, because `nil` is the signal we've finished.
     func prepare() {
-        currentFolder = ""
+        setCurrentFolder("")
+    }
+
+    /// Private method that acts as a bridge between the concurrent methods and `currentFolder`.
+    private
+    func setCurrentFolder(_ newValue: String?) {
+        currentFolder = newValue
     }
 
     /// Public method. The strategy is to make the comparison in two passes: in the first pass,
@@ -36,7 +40,7 @@ final class Preflighter: PreflighterType {
         var list = [Entry]()
         try await listInto(&list, withFolder: folder1, withFolder: folder2, firstPass: true, stopList: stopList)
         try await listInto(&list, withFolder: folder2, withFolder: folder1, firstPass: false, stopList: stopList)
-        currentFolder = nil // signal finished
+        await setCurrentFolder(nil) // signal finished
         await Task.yield()
         return list
     }
@@ -50,7 +54,7 @@ final class Preflighter: PreflighterType {
     ///   - firstPass: Whether this is the first pass, when we will also compare dates on items
     ///   that appear in both folders.
     ///   - stopList: Filenames to ignore.
-    nonisolated
+    @concurrent
     func listInto(
         _ theList: inout [Entry],
         withFolder folder1: URL,
@@ -58,7 +62,7 @@ final class Preflighter: PreflighterType {
         firstPass: Bool,
         stopList: [String]
     ) async throws {
-        currentFolder = folder1.path(percentEncoded: false)
+        await setCurrentFolder(folder1.path(percentEncoded: false))
         await Task.yield()
         var keys: Set<URLResourceKey> = [
             .isDirectoryKey, .isPackageKey, .isAliasFileKey, .isSymbolicLinkKey

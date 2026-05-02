@@ -35,10 +35,10 @@ final class MainProcessor: Processor {
             await presenter?.present(state)
         case .reveal(let index):
             let entry = state.results[index]
-            services.finderScripter.reveal(entry.copyFrom)
+            await services.finderScripter.reveal(entry.copyFrom)
         case .revealTarget(let index):
             let entry = state.results[index]
-            services.finderScripter.reveal(entry.copyTo)
+            await services.finderScripter.reveal(entry.copyTo)
         case .reverseDirection(let index):
             var entry = state.results[index]
             guard entry.why.destinationExists else {
@@ -60,7 +60,7 @@ final class MainProcessor: Processor {
             state.selectedResults = indexSet
             await presenter?.present(state)
         case .tickle:
-            services.finderScripter.tickle()
+            await services.finderScripter.tickle()
         case .trash(let indexSet):
             await trash(indexSet, target: false)
         case .trashTarget(let indexSet):
@@ -186,10 +186,8 @@ final class MainProcessor: Processor {
                 try? await unlessTesting {
                     try? await Task.sleep(for: .seconds(0.2))
                 }
-                try await Task { @concurrent in
-                    try await services.finderScripter.copy(from: entry.copyFrom, to: entry.copyTo)
-                    // try await Task.sleep(for: .seconds(1))
-                }.value
+                try await services.finderScripter.copy(from: entry.copyFrom, to: entry.copyTo)
+                // try await Task.sleep(for: .seconds(1))
                 state.results.remove(at: 0)
                 state.selectedResults = []
                 await presenter?.present(state)

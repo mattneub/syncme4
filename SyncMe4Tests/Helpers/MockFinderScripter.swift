@@ -1,7 +1,7 @@
 @testable import SyncMe4
 import Foundation
 
-final class MockFinderScripter: FinderScripterType {
+actor MockFinderScripter: FinderScripterType {
     nonisolated(unsafe) var methodsCalled = [String]()
     nonisolated(unsafe) var urls = [URL]()
     nonisolated(unsafe) var sources = [URL]()

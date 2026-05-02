@@ -2,7 +2,7 @@ import AppKit
 import SwiftAutomation
 import MacOSGlues
 
-protocol FinderScripterType: Sendable {
+protocol FinderScripterType: Actor {
     func tickle()
     func reveal(_ url: URL)
     func trash(_ url: URL) throws
@@ -10,9 +10,8 @@ protocol FinderScripterType: Sendable {
 }
 
 /// Object that knows how to talk to the Finder using Apple events.
-nonisolated
-final class FinderScripter: FinderScripterType {
-    private let NO_TIME_OUT: TimeInterval = TimeInterval(Int16.max-1) // ~9 hrs; passing -2 said to be buggy
+actor FinderScripter: FinderScripterType {
+    private let NO_TIME_OUT: TimeInterval = 54000 // 15 minutes; but this is not working
 
     func tickle() {
         // just enough to trigger the system dialog, if needed, on launch
@@ -48,6 +47,11 @@ final class FinderScripter: FinderScripterType {
         try? trash(destination) // if it fails it fails (might not even exist)
         let destinationContainer = destination.deletingLastPathComponent()
         let finder = Finder()
-        try finder.duplicate(source, to: destinationContainer, replacing: true, withTimeout: NO_TIME_OUT)
+        try finder.duplicate(
+            source,
+            to: destinationContainer,
+            replacing: true,
+            withTimeout: NO_TIME_OUT
+        )
     }
 }

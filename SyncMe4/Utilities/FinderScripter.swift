@@ -11,7 +11,7 @@ protocol FinderScripterType: Actor {
 
 /// Object that knows how to talk to the Finder using Apple events.
 actor FinderScripter: FinderScripterType {
-    private let NO_TIME_OUT: TimeInterval = 54000 // 15 minutes; but this is not working
+    private let NO_TIME_OUT: TimeInterval = Double(Int16.max-1) // ~9 hrs
 
     func tickle() {
         // just enough to trigger the system dialog, if needed, on launch
